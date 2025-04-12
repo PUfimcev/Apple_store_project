@@ -2,12 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\ProductImages;
+use App\Models\ProductImage;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class ProductImagesFactory extends Factory
+class ProductImageFactory extends Factory
 {
-    protected $model = ProductImages::class;
+    protected $model = ProductImage::class;
 
     public function definition(): array
     {

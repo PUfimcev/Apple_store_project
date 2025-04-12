@@ -44,7 +44,7 @@ class ProductVariant extends Model
      */
     public function images(): BelongsToMany
     {
-        return $this->belongsToMany(ProductImages::class);
+        return $this->belongsToMany(ProductImage::class);
     }
 
 
