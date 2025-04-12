@@ -3,14 +3,18 @@
 namespace App\Models;
 
 //use Illuminate\Database\Eloquent\Model;
+use Database\Factories\ApiUserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class ApiUser extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    /** @use HasFactory<ApiUserFactory> */
+    use HasFactory, Notifiable, softDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -18,14 +22,64 @@ class ApiUser extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'user_name',
         'email',
         'password',
+        'first_name',
+        'last_name',
+        'profile_picture',
+        'day_of_birth',
+        'phone_number',
+        'address',
+        'city',
+        'is_subscribed',
+        'email_verified_at',
         'verification_token',
         'password_reset_token',
         'password_reset_expiration',
         'last_login_at',
     ];
+
+    public function getRouteKeyName(): string
+    {
+        return 'user_name';
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function deliveryAddresses(): HasMany
+    {
+        return $this->hasMany(DeliveryAddress::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
+
+    /**
+     * @return HasOne
+     */
+    public function cart(): HasOne
+    {
+        return $this->hasOne(Cart::class);
+    }
+
+    /**
+     * @return HasOne
+     */
+    public function bookmark(): HasOne
+    {
+        return $this->hasOne(Bookmark::class);
+    }
+
+
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -49,9 +103,14 @@ class ApiUser extends Authenticatable
             'email_verified_at' => 'datetime',
             'last_login_at' => 'datetime',
             'password' => 'hashed',
+            'password_reset_expiration' => 'datetime',
+            'is_subscribed' => 'boolean',
+            'day_of_birth' => 'date',
+
         ];
     }
 }
+
 {
     //
 }
