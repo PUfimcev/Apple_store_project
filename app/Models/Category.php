@@ -14,6 +14,7 @@ class Category extends Model
 {
     use HasFactory, Notifiable, softDeletes;
 
+    protected array $dates = ['deleted_at'];
     protected $fillable = [
         'parent_id',
         'slug',

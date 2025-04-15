@@ -19,19 +19,21 @@ class ApiUserFactory extends Factory
             'password' => bcrypt($this->faker->password()),
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
-            'profile_picture' => $this->faker->word(),
-            'day_of_birth' => Carbon::now(),
+            'profile_picture' => $this->faker->imageUrl(300, 300, 'people'),
+            'day_of_birth' => $this->faker->dateTimeBetween('-80 years', '-18 years')->format('d-m-Y'),
             'phone_number' => $this->faker->phoneNumber(),
             'address' => $this->faker->address(),
             'city' => $this->faker->city(),
             'is_subscribed' => $this->faker->boolean(),
-            'email_verified_at' => Carbon::now(),
+            'email_verified_at' => $this->faker->optional(0.9)->dateTime(),
             'verification_token' => Str::random(10),
-            'password_reset_token' => bcrypt($this->faker->password()),
+            'password_reset_token' => Str::random(10),
             'password_reset_expiration' => Carbon::now(),
             'last_login_at' => Carbon::now(),
+            'deleted_at' => $this->faker->optional(0.2)->dateTime(),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];
     }
+
 }

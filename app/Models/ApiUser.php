@@ -16,6 +16,10 @@ class ApiUser extends Authenticatable
     /** @use HasFactory<ApiUserFactory> */
     use HasFactory, Notifiable, softDeletes;
 
+    protected array $dates = [
+        'day_of_birth',
+        'deleted_at'
+    ];
     /**
      * The attributes that are mass assignable.
      *

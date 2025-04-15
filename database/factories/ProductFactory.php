@@ -12,7 +12,13 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         return [
-
+            'category_id' => null,
+            'slug' => null,
+            'name' => null,
+            'description' => $this->faker->text(),
+            'price' => null,
+            'discount_price' => null,
+            'image_url' => $this->faker->imageUrl(640, 480, 'technics', true, 'Apple'),
         ];
     }
 }

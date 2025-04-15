@@ -13,6 +13,7 @@ class Product extends Model
 {
     use HasFactory, Notifiable, softDeletes;
 
+    protected $dates = ['deleted_at'];
     protected $fillable = [
         'category_id',
         'slug',
@@ -20,7 +21,6 @@ class Product extends Model
         'description',
         'price',
         'discount_price',
-        'attributes',
         'image_url',
     ];
 
