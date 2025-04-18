@@ -16,7 +16,7 @@ class CategoryFactory extends Factory
             'slug'  => null,
             'name'  => null,
             'description'  => $this->faker->text(),
-            'image_url' => $this->faker->imageUrl(640, 480, 'technics', true, 'Apple'),
+            'image_url' => null,
             'deleted_at' => null,
         ];
     }

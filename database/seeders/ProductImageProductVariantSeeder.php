@@ -4,8 +4,12 @@ namespace Database\Seeders;
 
 use App\Models\ProductImage;
 use App\Models\ProductVariant;
+
 //use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Services\Photos\PexelsService;
+use App\Utils\HandleApiPictures;
 use Illuminate\Database\Seeder;
+
 
 class ProductImageProductVariantSeeder extends Seeder
 {
@@ -14,12 +18,26 @@ class ProductImageProductVariantSeeder extends Seeder
      */
     public function run(): void
     {
-        ProductVariant::withTrashed()->each(function ($productVariant) {
-            $productImages = ProductImage::factory()->count(random_int(1, 6))->create()->pluck('id')->toArray();
+
+        $pexelsService = new PexelsService();
+        $handleApiPictures = new HandleApiPictures($pexelsService);
+
+        ProductVariant::withTrashed()->whereBetween('id', [1, 10])->each(callback: function ($productVariant) use ($handleApiPictures) {
+
+            $imageUrls = $handleApiPictures->savePexelsImage($productVariant->name, 4, 'product_variant_images', 'medium');
+            $productImages = [];
+            foreach ($imageUrls as $imageUrl) {
+
+                $productImages[] = ProductImage::factory()->create([
+                    'url' => $imageUrl,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ])->id;
+            }
 
             $productVariant->images()->attach($productImages, [
                 'created_at' => now(),
-                'updated_at' => now()
+                'updated_at' => now(),
             ]);
         });
     }

@@ -19,7 +19,7 @@ class ApiUserFactory extends Factory
             'password' => bcrypt($this->faker->password()),
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
-            'profile_picture' => $this->faker->imageUrl(300, 300, 'people'),
+            'profile_picture' => null,
             'day_of_birth' => $this->faker->dateTimeBetween('-80 years', '-18 years')->format('d-m-Y'),
             'phone_number' => $this->faker->phoneNumber(),
             'address' => $this->faker->address(),
