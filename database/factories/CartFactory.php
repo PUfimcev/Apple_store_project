@@ -12,7 +12,7 @@ class CartFactory extends Factory
     public function definition(): array
     {
         return [
-
+            'api_user_id' => null,
         ];
     }
 }

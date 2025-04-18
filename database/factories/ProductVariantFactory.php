@@ -12,7 +12,14 @@ class ProductVariantFactory extends Factory
     public function definition(): array
     {
         return [
-
+            'product_id' => null,
+            'sku' => null,
+            'slug' => null,
+            'name' => null,
+            'properties' => null,
+            'price' => null,
+            'discount_price' => null,
+            'stock' => $this->faker->numberBetween(0, 100),
         ];
     }
 }
