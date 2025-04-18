@@ -18,7 +18,7 @@ class ProductFactory extends Factory
             'description' => $this->faker->text(),
             'price' => null,
             'discount_price' => null,
-            'image_url' => $this->faker->imageUrl(640, 480, 'technics', true, 'Apple'),
+            'image_url' => null,
         ];
     }
 }

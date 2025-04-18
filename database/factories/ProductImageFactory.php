@@ -12,7 +12,7 @@ class ProductImageFactory extends Factory
     public function definition(): array
     {
         return [
-            'url' => $this->faker->imageUrl(640, 480, 'technics', true, 'Apple'),
+            'url' => null,
         ];
     }
 }

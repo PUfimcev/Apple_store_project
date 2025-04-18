@@ -4,9 +4,13 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 //use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Services\Photos\PexelsService;
+use App\Utils\HandleApiPictures;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use JsonException;
 use Random\RandomException;
 
 class CategorySeeder extends Seeder
@@ -26,6 +30,14 @@ class CategorySeeder extends Seeder
             'TV & Home' => ['Apple TV 4K', 'HomePod', 'HomePod mini'],
         ];
 
+        $directoryName = 'categories_images';
+        $pexelsService = new PexelsService();
+        $handleApiPictures = new HandleApiPictures($pexelsService);
+
+        if (Storage::exists($directoryName)) {
+            Storage::deleteDirectory($directoryName);
+        }
+
         Category::factory()->count(6)->sequence(
             ['slug' =>  Str::slug('Mac'), 'name' => 'Mac'],
             ['slug' => Str::slug('iPhone'), 'name' => 'iPhone'],
@@ -35,14 +47,23 @@ class CategorySeeder extends Seeder
             ['slug' => Str::slug('TV & Home'), 'name' => 'TV & Home'],
         )->create([
             'parent_id' => null,
-        ])->each(function ($category) use ($subcategories) {
+        ])->each(function ($category) use ($subcategories, $directoryName, $handleApiPictures) {
+
 
             foreach ($subcategories[$category->name] as $subcategory) {
+
                 try {
+                    $imageUrl = $handleApiPictures->savePexelsImage($subcategory, 1, $directoryName, 'medium');
+                } catch (JsonException $e) {
+                    Log::error("Problem with getting path:".$e->getMessage());
+                }
+                try {
+
                     Category::factory()->create([
                         'parent_id' => $category->id,
                         'slug' => Str::slug($subcategory),
                         'name' => $subcategory,
+                        'image_url' => $imageUrl,
                     ]);
 
                 } catch (RandomException $e) {
