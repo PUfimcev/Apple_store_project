@@ -22,7 +22,7 @@ class ProductImageProductVariantSeeder extends Seeder
         $pexelsService = new PexelsService();
         $handleApiPictures = new HandleApiPictures($pexelsService);
 
-        ProductVariant::withTrashed()->whereBetween('id', [1, 10])->each(callback: function ($productVariant) use ($handleApiPictures) {
+        ProductVariant::withTrashed()->where('id', '>', 151)->each(callback: function ($productVariant) use ($handleApiPictures) {
 
             $imageUrls = $handleApiPictures->savePexelsImage($productVariant->name, 4, 'product_variant_images', 'medium');
             $productImages = [];
