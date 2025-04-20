@@ -98,13 +98,11 @@ return [
 
     'system_route_prefix' => 'filament',
 
-    'auth' => [
-        'guard' => 'admin',
-    ],
+    'system_route_guard' => 'admin',
 
-    'middlewares' => [
-        'web',
+    'system_route_middleware' => [
         'auth:admin',
     ],
+
 
 ];

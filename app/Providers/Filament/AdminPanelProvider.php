@@ -2,6 +2,10 @@
 
 namespace App\Providers\Filament;
 
+use App\Models\ApiUser;
+use Filament\Forms\Components\TextInput;
+
+use Filament\Actions\Action;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -25,7 +29,8 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
-            ->path('admin')
+//            ->path('/admin')
+            ->domain('admin.' . config('app.domain'))
             ->login()
             ->registration()
             ->passwordReset()
@@ -57,6 +62,11 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->authGuard('admin')
+            ->spa()
+            ->favicon(asset('images/apple_favicon.png'))
+            ->databaseNotifications();
     }
+
 }
