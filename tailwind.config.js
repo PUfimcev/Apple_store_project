@@ -1,11 +1,10 @@
-module.exports = {
+import preset from './vendor/filament/support/tailwind.config.preset'
+
+export default {
+    presets: [preset],
     content: [
-        './resources/views/**/*.blade.php',
-        './resources/js/**/*.vue',
-        './resources/sass/**/*.scss',
+        './app/Filament/**/*.php',
+        './resources/views/filament/**/*.blade.php',
+        './vendor/filament/**/*.blade.php',
     ],
-    theme: {
-        extend: {},
-    },
-    plugins: [],
-};
+}
