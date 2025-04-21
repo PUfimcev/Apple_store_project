@@ -15,17 +15,17 @@ class DatabaseSeeder extends Seeder
     {
 
         $this->call([
-            ApiUserSeeder::class,
-            DeliveryAddressSeeder::class,
-            BookmarkSeeder::class,
-            CategorySeeder::class,
-            ProductSeeder::class,
-            ProductVariantSeeder::class,
-            OrderSeeder::class,
-            CartSeeder::class,
-            BookmarkProductVariantSeeder::class,
-            CartProductVariantSeeder::class,
-            OrderProductVariantSeeder::class,
+//            ApiUserSeeder::class,
+//            DeliveryAddressSeeder::class,
+//            BookmarkSeeder::class,
+//            CategorySeeder::class,
+//            ProductSeeder::class,
+//            ProductVariantSeeder::class,
+//            OrderSeeder::class,
+//            CartSeeder::class,
+//            BookmarkProductVariantSeeder::class,
+//            CartProductVariantSeeder::class,
+//            OrderProductVariantSeeder::class,
             ProductImageProductVariantSeeder::class,
         ]);
         // User::factory(10)->create();

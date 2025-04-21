@@ -6,8 +6,11 @@ use App\Models\Category;
 
 //use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Product;
+use App\Services\Photos\PexelsService;
+use App\Utils\HandleApiPictures;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Random\RandomException;
 
 class ProductSeeder extends Seeder
@@ -41,19 +44,29 @@ class ProductSeeder extends Seeder
             'Apple TV 4K' => ['Apple TV 4K'],
         ];
 
+        $directoryName = 'products_images';
+        $pexelsService = new PexelsService();
+        $handleApiPictures = new HandleApiPictures($pexelsService);
 
-        Category::withTrashed()->whereNotNull('parent_id')->each(function ($category) use ($products) {
+        if (Storage::exists($directoryName)) {
+            Storage::deleteDirectory($directoryName);
+        }
+
+        Category::withTrashed()->whereNotNull('parent_id')->each(function ($category) use ($products, $directoryName, $handleApiPictures) {
 
             foreach ($products[$category->name] as $product) {
                 try {
+                    $imageUrl = $handleApiPictures->savePexelsImage($product, 1, $directoryName, 'medium');
                     $price = random_int(0, 10000) / 100;
                     $discount_price = (random_int(0, 9) < 3) ? ($price * (1 - (random_int(1, 4) / 10))) : null;
+
                     Product::factory()->create([
                         'category_id' => $category->id,
                         'slug' => str($product)->slug(),
                         'name' => trim($product),
                         'price' => $price,
                         'discount_price' => $discount_price,
+                        'image_url' => $imageUrl,
                     ]);
 
                 } catch (RandomException $e) {

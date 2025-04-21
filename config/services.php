@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'pexels' => [
+        'base_uri' => 'https://api.pexels.com/v1/',
+        'api_key' => env('PEXELS_API_KEY'),
+    ],
 ];
