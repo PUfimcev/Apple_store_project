@@ -21,7 +21,10 @@ class BookmarkProductVariantSeeder extends Seeder
             try {
                 $productVariants = ProductVariant::all()->pluck('id')->random(random_int(1, 10))->toArray();
 
-                $bookmark->productVariants()->attach($productVariants);
+                $bookmark->productVariants()->attach($productVariants, [
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
 
             } catch (RandomException $e) {
                 Log::error($e->getMessage());

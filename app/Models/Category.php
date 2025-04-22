@@ -23,11 +23,13 @@ class Category extends Model
         'image_url'
     ];
 
+    protected $appends = ['parent_name'];
+
 
     /**
      * @return HasMany
      */
-    public function getChildren(): HasMany
+    public function subcategories(): HasMany
     {
         return $this->hasMany(__CLASS__, 'parent_id', 'id');
     }
@@ -54,6 +56,12 @@ class Category extends Model
     public function productVariants(): HasManyThrough
     {
         return $this->hasManyThrough(ProductVariant::class, Product::class);
+    }
+
+    public function getParentNameAttribute()
+    {
+        return $this->category ? $this->category->name : null;
+
     }
 
 }
