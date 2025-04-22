@@ -5,10 +5,13 @@ namespace App\Filament\Resources\CategoryResource\RelationManagers;
 use App\Models\Category;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Actions\Action;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SubcategoriesRelationManager extends RelationManager
@@ -29,7 +32,7 @@ class SubcategoriesRelationManager extends RelationManager
                     ->options(Category::whereNull('parent_id')->pluck('name', 'id')->toArray())
                     ->searchable()
                     ->nullable()
-                    ->default(fn () => $this->ownerRecord->id),
+                    ->default(fn() => $this->ownerRecord->id),
                 Forms\Components\TextInput::make('slug')
                     ->label('Pathname')
                     ->required()
@@ -72,17 +75,118 @@ class SubcategoriesRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->url(fn($record) => route('filament.admin.resources.categories.view', $record->id)),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-                Tables\Actions\ForceDeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->action(function (Category $record) {
+                        Notification::make()
+                            ->title('Deleted successfully')
+                            ->body("Category $record->name has been deleted.")
+                            ->success()
+                            ->actions([
+                                Action::make('Read')
+                                    ->button()
+                                    ->markAsRead(),
+                                Action::make('Unread')
+                                    ->button()
+                                    ->markAsUnread(),
+                            ])
+                            ->sendToDatabase(auth()->user());
+                        $record->delete();
+                        redirect()->route('filament.admin.resources.categories.index');
+                        Notification::make()
+                            ->success()
+                            ->title('Category deleted')
+                            ->body('The Category has been deleted successfully.')
+                            ->send();
+                    })
+                    ->requiresConfirmation()
+                    ->modalHeading('Delete Category')
+                    ->modalSubheading('Are you sure you want to delete this category?')
+                    ->modalButton('Delete'),
+                Tables\Actions\ForceDeleteAction::make()
+                    ->action(function (Category $record) {
+                        Notification::make()
+                            ->title('Force deleted successfully')
+                            ->body("Category $record->name has been deleted from DB.")
+                            ->success()
+                            ->sendToDatabase(auth()->user());
+                        $record->forceDelete();
+                        redirect()->route('filament.admin.resources.categories.index');
+                        Notification::make()
+                            ->success()
+                            ->title('Category deleted')
+                            ->body('The Category has been deleted successfully.')
+                            ->send();
+                    })
+                ->requiresConfirmation()
+                    ->modalHeading('Force Delete Category')
+                    ->modalSubheading('Are you sure you want to force delete this category?')
+                    ->modalButton('Force Delete'),
                 Tables\Actions\RestoreAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                    Tables\Actions\ForceDeleteBulkAction::make(),
-                    Tables\Actions\RestoreBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->requiresConfirmation()
+                        ->action(function (Collection $record) {
+                            Notification::make()
+                                ->title('Deleted successfully')
+                                ->body("Category $record->name has been deleted.")
+                                ->success()
+                                ->actions([
+                                    Action::make('Read')
+                                        ->button()
+                                        ->markAsRead(),
+                                    Action::make('Unread')
+                                        ->button()
+                                        ->markAsUnread(),
+                                ])
+                                ->sendToDatabase(auth()->user());
+                            $records->each->delete();
+                            redirect()->route('filament.admin.resources.categories.index');
+                            Notification::make()
+                                ->success()
+                                ->title('Category deleted')
+                                ->body('The Category has been deleted successfully.')
+                                ->send();
+                        }),
+                    Tables\Actions\ForceDeleteBulkAction::make()
+                        ->requiresConfirmation()
+                        ->action(function (Collection $record) {
+                            Notification::make()
+                                ->title('Force deleted successfully')
+                                ->body("Category $record->name has been deleted from DB.")
+                                ->success()
+                                ->sendToDatabase(auth()->user());
+                            $records->each->forceDelete();
+                            redirect()->route('filament.admin.resources.categories.index');
+                            Notification::make()
+                                ->success()
+                                ->title('Category deleted')
+                                ->body('The Category has been deleted successfully.')
+                                ->send();
+                        })
+                        ->requiresConfirmation()
+                        ->modalHeading('Force Delete Category')
+                        ->modalSubheading('Are you sure you want to force delete this category?')
+                        ->modalButton('Force Delete'),
+                    Tables\Actions\RestoreBulkAction::make()
+                        ->action(function (Collection $record) {
+                            Notification::make()
+                                ->title('Restored successfully')
+                                ->body("Category $record->name has been restored.")
+                                ->success()
+                                ->sendToDatabase(auth()->user());
+                            $records->each->restore();
+                            redirect()->route('filament.admin.resources.categories.index');
+                            Notification::make()
+                                ->success()
+                                ->title('Category restored')
+                                ->body('The Category has been restored successfully.')
+                                ->send();
+                        }),
                 ]),
             ])
             ->modifyQueryUsing(fn(Builder $query) => $query->withoutGlobalScopes([
