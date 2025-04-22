@@ -23,12 +23,6 @@
 </head>
 <body>
 <body class="antialiased">
-<x-filament::topbar>
-    <form class="flex items-center space-x-2">
-        <input type="text" class="px-3 py-2 border rounded" placeholder="Искать...">
-        <button type="submit" class="btn btn-primary">🔍</button>
-    </form>
-</x-filament::topbar>
 
 {{ $slot }}
 
