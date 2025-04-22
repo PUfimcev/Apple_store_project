@@ -32,6 +32,9 @@
 
 {{ $slot }}
 
+@livewire('notifications')
+@livewire('database-notifications')
+
 @filamentScripts
 @vite('resources/js/app.js')
 </body>
