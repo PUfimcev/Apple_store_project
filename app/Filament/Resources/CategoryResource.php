@@ -16,17 +16,79 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Contracts\Support\Htmlable;
 
 
 class CategoryResource extends Resource
 {
+    protected static ?string $navigationGroup = 'Products';
     protected static ?string $model = Category::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $recordTitleAttribute = 'name';
 
+    public static function canCreate(): bool
+    {
+        return auth()->user()->can('create_category');
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return auth()->user()->can('update_category');
+    }
+    public static function canDelete(Model $record): bool
+    {
+        return auth()->user()->can('delete_category');
+    }
+    public static function canViewAny(): bool
+    {
+        return auth()->check() && auth()->user()->can('view_any_category');
+    }
+    public static function canView(Model $record): bool
+    {
+        return auth()->user()->can('view_category');
+    }
+
+    public static function canForceDelete(Model $record): bool
+    {
+        return auth()->user()->can('force_delete_category');
+    }
+    public static function canRestore(Model $record): bool
+    {
+        return auth()->user()->can('restore_category');
+    }
+    public static function canRestoreAny(): bool
+    {
+        return auth()->user()->can('restore_any_category');
+    }
+    public static function canDeleteAny(): bool
+    {
+        return auth()->user()->can('delete_any_category');
+    }
+
+    public static function canReplicate(Model $record): bool
+    {
+        return auth()->user()->can('replicate_category');
+    }
+
+    public static function canReorder(): bool
+    {
+        return auth()->user()->can('reorder_category');
+    }
+
+    public static function canViewAnyTrashed(): bool
+    {
+        return auth()->user()->can('view_any_trashed_category');
+    }
+
+    public static function canViewTrashed(Model $record): bool
+    {
+        return auth()->user()->can('view_trashed_category');
+    }
+    public static function canForceDeleteAny(): bool
+    {
+        return auth()->user()->can('force_delete_any_category');
+    }
     public static function form(Form $form): Form
     {
         return $form
@@ -34,11 +96,10 @@ class CategoryResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Select::make('parent_id')
+                Forms\Components\Select::make('category')
                     ->label('Parent Category')
-                    ->relationship('category', 'name')
-                    ->options(Category::whereNull('parent_id')->pluck('name', 'id')->toArray())
-                    ->searchable()
+                    ->relationship('category', 'name', modifyQueryUsing: fn (Builder $query) => $query->whereNull('parent_id', )
+                    )
                     ->nullable(),
                 Forms\Components\TextInput::make('slug')
                     ->label('Pathname')
@@ -94,7 +155,7 @@ class CategoryResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
-                    ->action(function (Category $record) {
+                    ->action(function ($record) {
                         Notification::make()
                             ->title('Deleted successfully')
                             ->body("Category $record->name has been deleted.")
@@ -114,14 +175,14 @@ class CategoryResource extends Resource
                             ->success()
                             ->title('Category deleted')
                             ->body('The Category has been deleted successfully.')
-                        ->send();
+                            ->send();
                     })
                     ->requiresConfirmation()
                     ->modalHeading('Delete Category')
-                    ->modalSubheading('Are you sure you want to delete this category?')
-                    ->button('Delete'),
+                    ->modalDescription('Are you sure you want to delete this category?')
+                    ->modalSubmitActionLabel('Delete'),
                 Tables\Actions\ForceDeleteAction::make()
-                    ->action(function (Category $record) {
+                    ->action(function ($record) {
                         Notification::make()
                             ->title('Force deleted successfully')
                             ->body("Category $record->name has been deleted from DB.")
@@ -137,70 +198,80 @@ class CategoryResource extends Resource
                     })
                     ->requiresConfirmation()
                     ->modalHeading('Force Delete Category')
-                    ->modalSubheading('Are you sure you want to force delete this category?')
-                    ->modalButton('Force Delete'),
+                    ->modalDescription('Are you sure you want to force delete this category?')
+                    ->modalSubmitActionLabel('Force Delete'),
                 Tables\Actions\RestoreAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
                         ->requiresConfirmation()
-                        ->action(function (Collection $record) {
-                            Notification::make()
-                                ->title('Deleted successfully')
-                                ->body("Category $record->name has been deleted.")
-                                ->success()
-                                ->actions([
-                                    Action::make('Read')
-                                        ->button()
-                                        ->markAsRead(),
-                                    Action::make('Unread')
-                                        ->button()
-                                        ->markAsUnread(),
-                                ])
-                                ->sendToDatabase(auth()->user());
-                            $records->each->delete();
-                            redirect()->route('filament.admin.resources.categories.index');
-                            Notification::make()
-                                ->success()
-                                ->title('Category deleted')
-                                ->body('The Category has been deleted successfully.')
-                                ->send();
+                        ->action(function ($records) {
+                            foreach ($records as $record) {
+
+                                Notification::make()
+                                    ->title('Deleted successfully')
+                                    ->body("Category $record->name has been deleted.")
+                                    ->success()
+                                    ->actions([
+                                        Action::make('Read')
+                                            ->button()
+                                            ->markAsRead(),
+                                        Action::make('Unread')
+                                            ->button()
+                                            ->markAsUnread(),
+                                    ])
+                                    ->sendToDatabase(auth()->user());
+                                $record->delete();
+                                redirect()->route('filament.admin.resources.categories.index');
+                                Notification::make()
+                                    ->success()
+                                    ->title('Category deleted')
+                                    ->body('The Category has been deleted successfully.')
+                                    ->send();
+                            }
                         }),
                     Tables\Actions\ForceDeleteBulkAction::make()
                         ->requiresConfirmation()
-                        ->action(function (Collection $record) {
-                            Notification::make()
-                                ->title('Force deleted successfully')
-                                ->body("Category $record->name has been deleted from DB.")
-                                ->success()
-                                ->sendToDatabase(auth()->user());
-                            $records->each->forceDelete();
-                            redirect()->route('filament.admin.resources.categories.index');
-                            Notification::make()
-                                ->success()
-                                ->title('Category deleted')
-                                ->body('The Category has been deleted successfully.')
-                                ->send();
+                        ->action(function ($records) {
+                            foreach ($records as $record) {
+
+                                Notification::make()
+                                    ->title('Force deleted successfully')
+                                    ->body("Category $record->name has been deleted from DB.")
+                                    ->success()
+                                    ->sendToDatabase(auth()->user());
+                                $record->forceDelete();
+                                redirect()->route('filament.admin.resources.categories.index');
+                                Notification::make()
+                                    ->success()
+                                    ->title('Category deleted')
+                                    ->body('The Category has been deleted successfully.')
+                                    ->send();
+                            }
                         })
                         ->requiresConfirmation()
                         ->modalHeading('Force Delete Category')
-                        ->modalSubheading('Are you sure you want to force delete this category?')
-                        ->modalButton('Force Delete'),
+                        ->modalDescription('Are you sure you want to force delete this category?')
+                        ->modalSubmitActionLabel('Force Delete'),
                     Tables\Actions\RestoreBulkAction::make()
-                        ->action(function (Collection $record) {
-                            Notification::make()
-                                ->title('Restored successfully')
-                                ->body("Category $record->name has been restored.")
-                                ->success()
-                                ->sendToDatabase(auth()->user());
-                            $records->each->restore();
-                            redirect()->route('filament.admin.resources.categories.index');
-                            Notification::make()
-                                ->success()
-                                ->title('Category restored')
-                                ->body('The Category has been restored successfully.')
-                                ->send();
+                        ->requiresConfirmation()
+                        ->action(function ($records) {
+                            foreach ($records as $record) {
+
+                                Notification::make()
+                                    ->title('Restored successfully')
+                                    ->body("Category" . $record->name . " has been restored.")
+                                    ->success()
+                                    ->sendToDatabase(auth()->user());
+                                $record->restore();
+                                redirect()->route('filament.admin.resources.categories.index');
+                                Notification::make()
+                                    ->success()
+                                    ->title('Category restored')
+                                    ->body('The Category has been restored successfully.')
+                                    ->send();
+                            }
                         }),
                 ]),
             ]);
@@ -223,15 +294,20 @@ class CategoryResource extends Resource
         ];
     }
 
-    public static function getGlobalSearchResultTitle(Model $record): string|Htmlable
+    public static function getGloballySearchableAttributes(): array
     {
-        return $record->name;
+        return ['name', 'description'];
     }
 
 
     public function isReadOnly(): bool
     {
         return false;
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 
     public static function getEloquentQuery(): Builder

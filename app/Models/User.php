@@ -2,17 +2,22 @@
 
 namespace App\Models;
 
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
+use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
+use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+//use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements FilamentUser
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    /** @use HasFactory<UserFactory> */
+    use HasFactory, SoftDeletes,  Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -24,6 +29,11 @@ class User extends Authenticatable implements FilamentUser
         'email',
         'password',
     ];
+
+    /**
+     * @var array|string[]
+     */
+    protected array $dates = ['deleted_at'];
 
     /**
      * The attributes that should be hidden for serialization.

@@ -16,6 +16,9 @@ class EditCategory extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            \Filament\Actions\Action::make('Main page')
+                ->button()
+                ->url(route('filament.admin.resources.categories.index')),
             Actions\ViewAction::make(),
             Actions\DeleteAction::make(),
             Actions\ForceDeleteAction::make(),
