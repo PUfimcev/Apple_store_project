@@ -16,6 +16,11 @@ class ProductVariant extends Model
     use HasFactory, Notifiable, softDeletes;
 
     protected $dates = ['deleted_at'];
+
+    protected $casts = [
+        'properties' => 'array',
+    ];
+
     protected $fillable = [
         'product_id',
         'sku',

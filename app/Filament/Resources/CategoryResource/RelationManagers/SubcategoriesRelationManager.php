@@ -79,7 +79,7 @@ class SubcategoriesRelationManager extends RelationManager
                     ->url(fn($record) => route('filament.admin.resources.categories.view', $record->id)),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
-                    ->action(function (Category $record) {
+                    ->action(function ($record) {
                         Notification::make()
                             ->title('Deleted successfully')
                             ->body("Category $record->name has been deleted.")
@@ -103,10 +103,10 @@ class SubcategoriesRelationManager extends RelationManager
                     })
                     ->requiresConfirmation()
                     ->modalHeading('Delete Category')
-                    ->modalSubheading('Are you sure you want to delete this category?')
-                    ->modalButton('Delete'),
+                    ->modalDescription('Are you sure you want to delete this category?')
+                    ->modalSubmitActionLabel('Delete'),
                 Tables\Actions\ForceDeleteAction::make()
-                    ->action(function (Category $record) {
+                    ->action(function ($record) {
                         Notification::make()
                             ->title('Force deleted successfully')
                             ->body("Category $record->name has been deleted from DB.")
@@ -122,15 +122,18 @@ class SubcategoriesRelationManager extends RelationManager
                     })
                 ->requiresConfirmation()
                     ->modalHeading('Force Delete Category')
-                    ->modalSubheading('Are you sure you want to force delete this category?')
-                    ->modalButton('Force Delete'),
+                    ->modalDescription('Are you sure you want to force delete this category?')
+                    ->modalSubmitActionLabel('Force Delete'),
                 Tables\Actions\RestoreAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
                         ->requiresConfirmation()
-                        ->action(function (Collection $record) {
+                        ->action(function ($records) {
+
+                            foreach ($records as $record) {
+
                             Notification::make()
                                 ->title('Deleted successfully')
                                 ->body("Category $record->name has been deleted.")
@@ -151,10 +154,13 @@ class SubcategoriesRelationManager extends RelationManager
                                 ->title('Category deleted')
                                 ->body('The Category has been deleted successfully.')
                                 ->send();
+                            }
                         }),
                     Tables\Actions\ForceDeleteBulkAction::make()
                         ->requiresConfirmation()
-                        ->action(function (Collection $record) {
+                        ->action(function ($records) {
+                            foreach ($records as $record) {
+
                             Notification::make()
                                 ->title('Force deleted successfully')
                                 ->body("Category $record->name has been deleted from DB.")
@@ -167,25 +173,28 @@ class SubcategoriesRelationManager extends RelationManager
                                 ->title('Category deleted')
                                 ->body('The Category has been deleted successfully.')
                                 ->send();
+                            }
                         })
-                        ->requiresConfirmation()
                         ->modalHeading('Force Delete Category')
-                        ->modalSubheading('Are you sure you want to force delete this category?')
-                        ->modalButton('Force Delete'),
+                        ->modalDescription('Are you sure you want to force delete this category?')
+                        ->modalSubmitActionLabel('Force Delete'),
                     Tables\Actions\RestoreBulkAction::make()
-                        ->action(function (Collection $record) {
-                            Notification::make()
-                                ->title('Restored successfully')
-                                ->body("Category $record->name has been restored.")
-                                ->success()
-                                ->sendToDatabase(auth()->user());
-                            $records->each->restore();
-                            redirect()->route('filament.admin.resources.categories.index');
-                            Notification::make()
-                                ->success()
-                                ->title('Category restored')
-                                ->body('The Category has been restored successfully.')
-                                ->send();
+                        ->requiresConfirmation()
+                        ->action(function ($records) {
+                            foreach ($records as $record) {
+                                Notification::make()
+                                    ->title('Restored successfully')
+                                    ->body("Category $record->name has been restored.")
+                                    ->success()
+                                    ->sendToDatabase(auth()->user());
+                                $records->each->restore();
+                                redirect()->route('filament.admin.resources.categories.index');
+                                Notification::make()
+                                    ->success()
+                                    ->title('Category restored')
+                                    ->body('The Category has been restored successfully.')
+                                    ->send();
+                            }
                         }),
                 ]),
             ])
