@@ -44,6 +44,13 @@ class ProductVariant extends Model
     {
         return $this->hasOneThrough(Category::class, Product::class, 'id', 'id', 'product_id', 'category_id');
     }
+    /**
+     * @return BelongsToMany
+     */
+    public function orders(): belongsToMany
+    {
+        return $this->belongsToMany(Order::class)->withPivot('quantity', 'price', 'discount_price')->withTimestamps();
+    }
 
     /**
      * @return BelongsToMany
