@@ -2,16 +2,17 @@
 
 namespace App\Providers\Filament;
 
-use App\Models\ApiUser;
-use Filament\Facades\Filament;
-use Filament\Forms\Components\TextInput;
-
-use Filament\Actions\Action;
+use App\Filament\Resources\ApiUserResource;
+use App\Filament\Resources\CategoryResource;
+use App\Filament\Widgets\BestSellersTable;
+use App\Filament\Widgets\ConsumerGrowthChart;
+use App\Filament\Widgets\LatestOrders;
+use App\Filament\Widgets\SalesGrowthChart;
+use App\Filament\Widgets\StatisticsApiUsersWidget;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Navigation\UserMenuItem;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -23,6 +24,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -43,6 +45,10 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            ->resources([
+                ApiUserResource::class,
+                CategoryResource::class,
+            ])
             ->pages([
                 Pages\Dashboard::class,
             ])
@@ -50,6 +56,11 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
+                StatisticsApiUsersWidget::class,
+                LatestOrders::class,
+                SalesGrowthChart::class,
+                ConsumerGrowthChart::class,
+                BestSellersTable::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -68,7 +79,10 @@ class AdminPanelProvider extends PanelProvider
             ->authGuard('admin')
             ->spa()
             ->favicon(asset('images/apple_favicon.png'))
-            ->databaseNotifications();
+            ->databaseNotifications()
+            ->plugins([
+                FilamentShieldPlugin::make(),
+            ]);
     }
 
 }

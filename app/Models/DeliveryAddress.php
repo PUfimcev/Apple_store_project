@@ -29,5 +29,9 @@ class DeliveryAddress extends Model
         return $this->hasMany(Order::class);
     }
 
+    public function apiUser(): BelongsTo
+    {
+        return $this->belongsTo(ApiUser::class);
+    }
 
 }

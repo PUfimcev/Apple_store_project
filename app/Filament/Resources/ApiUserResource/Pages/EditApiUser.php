@@ -1,24 +1,23 @@
 <?php
 
-namespace App\Filament\Resources\CategoryResource\Pages;
+namespace App\Filament\Resources\ApiUserResource\Pages;
 
-use App\Filament\Resources\CategoryResource;
+use App\Filament\Resources\ApiUserResource;
 use Filament\Actions;
 use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 
-
-class EditCategory extends EditRecord
+class EditApiUser extends EditRecord
 {
-    protected static string $resource = CategoryResource::class;
+    protected static string $resource = ApiUserResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
-            \Filament\Actions\Action::make('Main page')
-                ->button()
-                ->url(route('filament.admin.resources.categories.index')),
+            Actions\Action::make('Main page')
+                ->label('Main page')
+                ->url(route('filament.admin.resources.api-users.index')),
             Actions\ViewAction::make(),
             Actions\DeleteAction::make(),
             Actions\ForceDeleteAction::make(),
@@ -32,7 +31,7 @@ class EditCategory extends EditRecord
         $record = $this->record;
         Notification::make()
             ->title('Updated successfully')
-            ->body("The Category $record->name has been updated.")
+            ->body("The User $record->user_name has been updated.")
             ->success()
             ->actions([
                 Action::make('Read')
@@ -46,8 +45,8 @@ class EditCategory extends EditRecord
 
         return Notification::make()
             ->success()
-            ->title('Category updated')
-            ->body('The Category has been saved successfully.');
+            ->title('User updated')
+            ->body("The User $record->user_name has been saved successfully.");
     }
 
     protected function getRedirectUrl(): string
@@ -56,5 +55,6 @@ class EditCategory extends EditRecord
 
         return $this->getResource()::getUrl('view', ['record' => $record->id]);
     }
+
 
 }
