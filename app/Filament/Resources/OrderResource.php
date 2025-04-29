@@ -7,9 +7,12 @@ use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Filament\Resources\OrderResource\RelationManagers\ApiUserRelationManager;
 use App\Filament\Resources\OrderResource\RelationManagers\ProductVariantsRelationManager;
 use App\Models\ApiUser;
+use App\Models\DeliveryAddress;
 use App\Models\Order;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Actions\Action;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -32,14 +35,17 @@ class OrderResource extends Resource
     {
         return auth()->user()->can('update_order');
     }
+
     public static function canDelete(Model $record): bool
     {
         return auth()->user()->can('delete_order');
     }
+
     public static function canViewAny(): bool
     {
         return auth()->check() && auth()->user()->can('view_any_order');
     }
+
     public static function canView(Model $record): bool
     {
         return auth()->user()->can('view_order');
@@ -49,14 +55,17 @@ class OrderResource extends Resource
     {
         return auth()->user()->can('force_delete_order');
     }
+
     public static function canRestore(Model $record): bool
     {
         return auth()->user()->can('restore_order');
     }
+
     public static function canRestoreAny(): bool
     {
         return auth()->user()->can('restore_any_order');
     }
+
     public static function canDeleteAny(): bool
     {
         return auth()->user()->can('delete_any_order');
@@ -81,32 +90,53 @@ class OrderResource extends Resource
     {
         return auth()->user()->can('view_trashed_order');
     }
+
     public static function canForceDeleteAny(): bool
     {
         return auth()->user()->can('force_delete_any_order');
     }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('api_user_id')
-                    ->relationship('apiUser', 'user_name')
-                    ->disabled(),
+                Forms\Components\TextInput::make('api_user_id')
+                    ->label('Consumer')
+                    ->formatStateUsing(fn($record) => $record ? $record->apiUser->first_name : "")
+                    ->disabled(fn($record) => $record !== null)
+                    ->visible(fn($record) => $record !== null),
                 Forms\Components\TextInput::make('total_amount')
                     ->disabled()
-                    ->numeric(),
-                Forms\Components\TextInput::make('payment_method')
-                    ->disabled()
-                    ->maxLength(255)
-                    ->default('credit_card'),
+                    ->numeric()
+                    ->visible(fn($record) => $record !== null),
                 Forms\Components\Select::make('delivery_address_id')
-                    ->relationship('deliveryAddress', 'address')
+                    ->relationship('deliveryAddress', 'delivery_address_id')
+                    ->options(fn($record) => ApiUser::where('id', $record->api_user_id)
+                        ->first()?->deliveryAddresses->pluck('city', 'id')->toArray())
+                    ->visible(fn($record) => $record !== null)
                     ->required(),
                 Forms\Components\Select::make('delivery_address_id')
-                    ->relationship('deliveryAddress', 'city')
+                    ->options(fn($record) => ApiUser::where('id', $record->api_user_id)
+                        ->first()?->deliveryAddresses->pluck('address', 'id')->toArray())
+                    ->visible(fn($record) => $record !== null)
                     ->required(),
+                Forms\Components\TextInput::make('deliveryAddress')
+                    ->label('Address')
+                    ->visible(fn($record) => $record === null)
+                    ->required(),
+                Forms\Components\Select::make('payment_method')
+                    ->label('Payment Method')
+                    ->options([
+                        'cash' => 'Cash',
+                        'card' => 'Card',
+                    ]),
                 Forms\Components\Select::make('status')
-                    ->options([])
+                    ->options([
+                        'pending' => 'Pending',
+                        'processing' => 'Processing',
+                        'completed' => 'Completed',
+                        'cancelled' => 'Cancelled',
+                    ])
                     ->required(),
             ]);
     }
@@ -125,7 +155,15 @@ class OrderResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('deliveryAddress.address')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('status'),
+                Tables\Columns\TextColumn::make('status')
+                    ->color(fn($record) => match ($record->status->value) {
+                        'pending' => 'warning',
+                        'processing' => 'info',
+                        'completed' => 'success',
+                        'cancelled' => 'danger',
+                        default => 'gray'
+                    })
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
@@ -140,6 +178,16 @@ class OrderResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                Tables\Filters\SelectFilter::make('status')
+                    ->label('Status filter')
+                    ->options([
+                        'pending' => 'Pending',
+                        'processing' => 'Processing',
+                        'completed' => 'Completed',
+                        'cancelled' => 'Cancelled',
+                    ])
+                    ->multiple()
+                    ->default(['pending']),
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
@@ -148,9 +196,75 @@ class OrderResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                    Tables\Actions\ForceDeleteBulkAction::make(),
-                    Tables\Actions\RestoreBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->requiresConfirmation()
+                        ->action(function ($records) {
+                            foreach ($records as $record) {
+
+                                Notification::make()
+                                    ->title('Deleted successfully')
+                                    ->body('Order has been deleted.')
+                                    ->success()
+                                    ->actions([
+                                        Action::make('Read')
+                                            ->button()
+                                            ->markAsRead(),
+                                        Action::make('Unread')
+                                            ->button()
+                                            ->markAsUnread(),
+                                    ])
+                                    ->sendToDatabase(auth()->user());
+                                $record->delete();
+                                redirect()->route('filament.admin.resources.orders.index');
+                                Notification::make()
+                                    ->success()
+                                    ->title('Order deleted')
+                                    ->body('The Order has been deleted successfully.')
+                                    ->send();
+                            }
+                        }),
+                    Tables\Actions\ForceDeleteBulkAction::make()
+                        ->requiresConfirmation()
+                        ->action(function ($records) {
+                            foreach ($records as $record) {
+
+                                Notification::make()
+                                    ->title('Force deleted successfully')
+                                    ->body( 'Order has been deleted from DB.')
+                                    ->success()
+                                    ->sendToDatabase(auth()->user());
+                                $record->forceDelete();
+                                redirect()->route('filament.admin.resources.orders.index');
+                                Notification::make()
+                                    ->success()
+                                    ->title('Order deleted')
+                                    ->body('The Order has been deleted successfully.')
+                                    ->send();
+                            }
+                        })
+                        ->requiresConfirmation()
+                        ->modalHeading('Force Delete Category')
+                        ->modalDescription('Are you sure you want to force delete this category?')
+                        ->modalSubmitActionLabel('Force Delete'),
+                    Tables\Actions\RestoreBulkAction::make()
+                        ->requiresConfirmation()
+                        ->action(function ($records) {
+                            foreach ($records as $record) {
+
+                                Notification::make()
+                                    ->title('Restored successfully')
+                                    ->body( 'Order has been restored.')
+                                    ->success()
+                                    ->sendToDatabase(auth()->user());
+                                $record->restore();
+                                redirect()->route('filament.admin.resources.orders.index');
+                                Notification::make()
+                                    ->success()
+                                    ->title('Order restored')
+                                    ->body('The Order has been restored successfully.')
+                                    ->send();
+                            }
+                        }),
                 ]),
             ]);
     }
@@ -158,7 +272,6 @@ class OrderResource extends Resource
     public static function getRelations(): array
     {
         return [
-            ApiUserRelationManager::class,
             ProductVariantsRelationManager::class,
         ];
     }
@@ -171,6 +284,13 @@ class OrderResource extends Resource
             'view' => Pages\ViewOrder::route('/{record}'),
             'edit' => Pages\EditOrder::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        $count = static::getModel()::whereIn('status', ['Pending'])->count();
+
+        return $count > 0 ? "$count New" : "0 New";
     }
 
     public static function getEloquentQuery(): Builder

@@ -17,7 +17,7 @@ class StatisticsApiUsersWidget extends BaseWidget
             Stat::make('Total consumers', ApiUser::count())
                 ->icon('heroicon-o-users')
                 ->url(route('filament.admin.resources.api-users.index')),
-            Stat::make('Orders', Order::count())->icon('heroicon-o-shopping-cart'),
+            Stat::make('Orders completed', Order::where('status', 'completed')->count())->icon('heroicon-o-shopping-cart'),
             Stat::make('Revenue', '$' . Order::sum('total_amount'))->icon('heroicon-o-banknotes'),
         ];
     }
