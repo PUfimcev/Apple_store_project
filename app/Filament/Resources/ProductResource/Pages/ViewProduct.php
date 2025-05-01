@@ -9,6 +9,7 @@ use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Support\Enums\FontWeight;
 use Storage;
 
 class ViewProduct extends ViewRecord
@@ -30,30 +31,23 @@ class ViewProduct extends ViewRecord
         return $infolist->schema([
             TextEntry::make('category_id')
                 ->label('Category')
-                ->formatStateUsing(fn($record) => "<strong>{$record->category->name}</strong>")
-                ->html(),
+                ->weight(FontWeight::Bold),
             TextEntry::make('slug')
                 ->label('Slug')
-                ->formatStateUsing(fn($state) => "<strong>{$state}</strong>")
-                ->html(),
+                ->weight(FontWeight::Bold),
             TextEntry::make('name')
                 ->label('Name')
-                ->formatStateUsing(fn($state) => "<strong>{$state}</strong>")
-                ->html(),
+                ->weight(FontWeight::Bold),
             TextEntry::make('description')
                 ->label('Description')
                 ->columnSpanFull()
-            ->formatStateUsing(fn($state) => "<strong>{$state}</strong>")
-            ->html(),
+                ->weight(FontWeight::Bold),
             TextEntry::make('price')
             ->label('Price')
-            ->formatStateUsing(fn($state) => "<strong>{$state}</strong>")
-            ->html(),
+                ->weight(FontWeight::Bold),
             TextEntry::make('discount_price')
             ->label('Discount')
-            ->formatStateUsing(
-            fn($state) => "<strong>{$state}</strong>")
-            ->html()
+                ->weight(FontWeight::Bold)
             ->visible( fn($state) => $state !== null),
             ImageEntry::make('image_url')
                 ->width(200)

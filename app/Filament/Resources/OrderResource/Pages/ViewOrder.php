@@ -8,6 +8,7 @@ use Filament\Actions\Action;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Support\Enums\FontWeight;
 
 class ViewOrder extends ViewRecord
 {
@@ -28,29 +29,22 @@ class ViewOrder extends ViewRecord
         return $infolist->schema([
             TextEntry::make('id')
                 ->label('Order ID')
-                ->formatStateUsing(fn($record) => "<strong>{$record->id}</strong>")
-                ->html(),
+                ->weight(FontWeight::Bold),
             TextEntry::make('total_amount')->label('Total Amount')
-                ->formatStateUsing(fn($record) => "<strong>$record->total_amount</strong>")
-                ->html(),
+                ->weight(FontWeight::Bold),
             TextEntry::make('api_user_id')
                 ->label('First name')
-                ->formatStateUsing(fn($record) => "<strong>{$record->apiUser->first_name}</strong>")
-                ->html(),
+                ->weight(FontWeight::Bold),
             TextEntry::make('api_user_id')
                 ->label('Last name')
-                ->formatStateUsing(fn($record) => "<strong>{$record->apiUser->last_name}</strong>")
-                ->html(),
+                ->weight(FontWeight::Bold),
             TextEntry::make('api_user_id')
                 ->label("Consumer's phone number")
-                ->formatStateUsing(fn($record) => "<strong>{$record->apiUser->phone_number}</strong>")
-                ->html(),
+                ->weight(FontWeight::Bold),
             TextEntry::make('deliveryAddress.address')->label('Address')
-                ->formatStateUsing(fn($record) => "<strong>{$record->deliveryAddress->address}</strong>, <strong>{$record->deliveryAddress->city}</strong>")
-                ->html(),
+                ->weight(FontWeight::Bold),
             TextEntry::make('payment_method')->label('Payment Method')
-                ->formatStateUsing(fn($record) => "<strong>$record->payment_method</strong>")
-                ->html(),
+                ->weight(FontWeight::Bold),
             TextEntry::make('status')->label('Status')
                 ->color(fn($record) =>
                 match ($record->status->value) {

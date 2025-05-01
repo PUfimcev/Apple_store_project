@@ -3,14 +3,19 @@
 namespace App\Enums;
 
 use App\Interfaces\EnumsGetDescriptionInterface;
+use Filament\Support\Contracts\HasLabel;
 
-enum OrderStatus: string  implements EnumsGetDescriptionInterface
+enum OrderStatus: string  implements EnumsGetDescriptionInterface, HasLabel
 {
     case PENDING = 'pending';
     case PROCESSING = 'processing';
     case COMPLETED = 'completed';
     case CANCELLED = 'cancelled';
 
+    public function getLabel(): ?string
+    {
+        return $this->name;
+    }
     public function getDescription(): string
     {
         return match ($this) {

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\OrderStatus;
 use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Filament\Resources\OrderResource\RelationManagers\ApiUserRelationManager;
@@ -15,6 +16,7 @@ use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -154,6 +156,7 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('payment_method')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('deliveryAddress.address')
+                    ->wrap()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('status')
                     ->color(fn($record) => match ($record->status->value) {
@@ -177,6 +180,14 @@ class OrderResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->groups(
+                [
+                    'payment_method',
+                    'status',
+                    'created_at',
+                ]
+            )
+            ->defaultGroup('payment_method')
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
                     ->label('Status filter')
@@ -230,7 +241,7 @@ class OrderResource extends Resource
 
                                 Notification::make()
                                     ->title('Force deleted successfully')
-                                    ->body( 'Order has been deleted from DB.')
+                                    ->body('Order has been deleted from DB.')
                                     ->success()
                                     ->sendToDatabase(auth()->user());
                                 $record->forceDelete();
@@ -253,7 +264,7 @@ class OrderResource extends Resource
 
                                 Notification::make()
                                     ->title('Restored successfully')
-                                    ->body( 'Order has been restored.')
+                                    ->body('Order has been restored.')
                                     ->success()
                                     ->sendToDatabase(auth()->user());
                                 $record->restore();

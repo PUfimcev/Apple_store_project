@@ -62,22 +62,6 @@ class ProductVariantsRelationManager extends RelationManager
                     ->rows(6)
                     ->formatStateUsing(fn($state) => is_array($state) ? json_encode($state, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) : $state)
                     ->dehydrateStateUsing(fn($state) => json_decode($state, true)),
-
-
-
-//                Forms\Components\FileUpload::make('images')
-//                    ->label('Images')
-//                    ->relationship('images')
-//                    ->columnSpanFull()
-//                    ->image()
-//                    ->multiple()
-//                    ->directory('product_variant_images')
-//                    ->disk('public')
-//                    ->visibility('public'),
-//                Tables\Columns\ImageColumn::make('images.url')
-//                    ->label('Images')
-//                    ->disk('public')
-//                    ->toggleable(isToggledHiddenByDefault: true),
             ]);
     }
 
@@ -95,6 +79,7 @@ class ProductVariantsRelationManager extends RelationManager
                     ->searchable(),
                 Tables\Columns\TextColumn::make('properties')
                     ->searchable()
+                    ->wrap()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('price')
                     ->sortable(),
@@ -106,8 +91,7 @@ class ProductVariantsRelationManager extends RelationManager
                     ->disk('public')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->stacked()
-                    ->limit(3)
-                    ->limitedRemainingText()
+                    ->wrap()
                     ->height(50),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime('d.m.Y H:i')

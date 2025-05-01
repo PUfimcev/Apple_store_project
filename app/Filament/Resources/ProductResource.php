@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
-use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Filament\Resources\ProductResource\RelationManagers\ProductVariantsRelationManager;
 use App\Models\Category;
 use App\Models\Product;
@@ -13,6 +12,7 @@ use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -143,7 +143,8 @@ class ProductResource extends Resource
                     ->label('Category')
                     ->formatStateUsing(fn($state) => Category::find($state)->name)
                     ->sortable(),
-                Tables\Columns\TextColumn::make('slug'),
+                Tables\Columns\TextColumn::make('slug')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('name')
                     ->sortable()
                     ->searchable(),
@@ -153,7 +154,8 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('discount_price')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\ImageColumn::make('image_url'),
+                Tables\Columns\ImageColumn::make('image_url')
+                    ->wrap(),
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->dateTime('d.m.Y H:i')
                     ->sortable()
@@ -167,6 +169,14 @@ class ProductResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->groups(
+                [
+                    Group::make('category_id')
+                        ->getDescriptionFromRecordUsing(fn (Product $record): string => $record->category->name)
+                        ->label('Category'),
+                    'updated_at',
+                ]
+            )
             ->filters([
                 Tables\Filters\SelectFilter::make('category_id')
                     ->label('Category filter')

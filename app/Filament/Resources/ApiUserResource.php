@@ -152,8 +152,10 @@ class ApiUserResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('last_name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('profile_picture')
-                    ->searchable(),
+                 Tables\Columns\ImageColumn::make('profile_picture')
+                     ->label('Images')
+                     ->disk('public')
+                     ->height(50),
                 Tables\Columns\TextColumn::make('day_of_birth')
                     ->date('d.m.Y')
                     ->sortable(),
@@ -161,6 +163,7 @@ class ApiUserResource extends Resource
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('address')
+                    ->wrap()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('city')

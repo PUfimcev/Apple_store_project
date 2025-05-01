@@ -9,6 +9,7 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Infolists\Components\ImageEntry;
+use Filament\Support\Enums\FontWeight;
 
 class ViewCategory extends ViewRecord
 {
@@ -28,15 +29,15 @@ class ViewCategory extends ViewRecord
     public function infolist(Infolist $infolist): Infolist
     {
         return $infolist->schema([
-            TextEntry::make('id')->label('ID'),
-            TextEntry::make('parent_id')->label('Parent id'),
-            TextEntry::make('parent_name')->label('Parent category name'),
-            TextEntry::make('slug')->label('URL'),
-            TextEntry::make('name')->label('Name'),
-            TextEntry::make('description')->label('Description'),
-            TextEntry::make('deleted_at')->label('Deleting date')->dateTime('d.m.Y H:i'),
-            TextEntry::make('updated_at')->label('Updating date')->dateTime('d.m.Y H:i'),
-            TextEntry::make('created_at')->label('Creating date')->dateTime('d.m.Y H:i'),
+            TextEntry::make('id')->label('ID')->weight(FontWeight::Bold),
+            TextEntry::make('parent_id')->label('Parent id')->weight(FontWeight::Bold),
+            TextEntry::make('parent_name')->label('Parent category name')->weight(FontWeight::Bold),
+            TextEntry::make('slug')->label('URL')->weight(FontWeight::Bold),
+            TextEntry::make('name')->label('Name')->weight(FontWeight::Bold),
+            TextEntry::make('description')->label('Description')->weight(FontWeight::Bold),
+            TextEntry::make('deleted_at')->label('Deleting date')->dateTime('d.m.Y H:i')->weight(FontWeight::Bold),
+            TextEntry::make('updated_at')->label('Updating date')->dateTime('d.m.Y H:i')->weight(FontWeight::Bold),
+            TextEntry::make('created_at')->label('Creating date')->dateTime('d.m.Y H:i')->weight(FontWeight::Bold),
             ImageEntry::make('image_url')
                 ->width(200)
                 ->height(200)

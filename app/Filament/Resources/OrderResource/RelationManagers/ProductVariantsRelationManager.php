@@ -55,12 +55,14 @@ class ProductVariantsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('price'),
                 Tables\Columns\TextColumn::make('properties')
                     ->label('Properties')
+                    ->wrap()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\ImageColumn::make('images.url')
                     ->label('Images')
                     ->limit(3)
                     ->limitedRemainingText()
                     ->disk('public')
+                    ->wrap()
                     ->toggleable(isToggledHiddenByDefault: true),
 
             ])
