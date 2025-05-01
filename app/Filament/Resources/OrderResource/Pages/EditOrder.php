@@ -44,7 +44,7 @@ class EditOrder extends EditRecord
                 })
                 ->requiresConfirmation()
                 ->modalHeading('Delete Order')
-                ->modalDescription('Are you sure you want to delete this category?')
+                ->modalDescription('Are you sure you want to delete this order?')
                 ->modalSubmitActionLabel('Delete'),
             Actions\ForceDeleteAction::make()
                 ->action(function ($record) {
@@ -63,7 +63,7 @@ class EditOrder extends EditRecord
                 })
                 ->requiresConfirmation()
                 ->modalHeading('Force Delete Order')
-                ->modalDescription('Are you sure you want to force delete this category?')
+                ->modalDescription('Are you sure you want to force delete this order?')
                 ->modalSubmitActionLabel('Force Delete'),
             Actions\RestoreAction::make(),
         ];

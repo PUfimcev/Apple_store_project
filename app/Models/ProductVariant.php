@@ -15,12 +15,6 @@ class ProductVariant extends Model
 {
     use HasFactory, Notifiable, softDeletes;
 
-    protected $dates = ['deleted_at'];
-
-    protected $casts = [
-        'properties' => 'array',
-    ];
-
     protected $fillable = [
         'product_id',
         'sku',
@@ -31,7 +25,19 @@ class ProductVariant extends Model
         'discount_price',
         'stock'
     ];
+    protected $dates = ['deleted_at'];
 
+//    protected $casts = [
+//        'properties' => 'array',
+//    ];
+
+
+    protected function casts(): array
+    {
+        return [
+            'properties' => 'array',
+        ];
+    }
     /**
      * @return BelongsTo
      */

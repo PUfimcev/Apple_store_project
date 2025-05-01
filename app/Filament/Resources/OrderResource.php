@@ -165,15 +165,15 @@ class OrderResource extends Resource
                     })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('deleted_at')
-                    ->dateTime()
+                    ->dateTime('d.m.Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
+                    ->dateTime('d.m.Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->dateTime('d.m.Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
@@ -244,7 +244,7 @@ class OrderResource extends Resource
                         })
                         ->requiresConfirmation()
                         ->modalHeading('Force Delete Category')
-                        ->modalDescription('Are you sure you want to force delete this category?')
+                        ->modalDescription('Are you sure you want to force delete this order?')
                         ->modalSubmitActionLabel('Force Delete'),
                     Tables\Actions\RestoreBulkAction::make()
                         ->requiresConfirmation()

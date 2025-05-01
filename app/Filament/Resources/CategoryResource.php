@@ -13,9 +13,9 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Storage;
 
 
 class CategoryResource extends Resource
@@ -109,7 +109,11 @@ class CategoryResource extends Resource
                     ->columnSpanFull(),
                 Forms\Components\FileUpload::make('image_url')
                     ->disabled(fn($get) => $get('parent_id') === null)
-                    ->image(),
+                    ->image()
+                    ->directory('categories_images')
+                    ->disk('public')
+                    ->visibility('public')
+                    ->deleteUploadedFileUsing(fn ($state, $record) => $state ? Storage::disk('public')->delete('products_images/' . $state) : null),
             ]);
     }
 
