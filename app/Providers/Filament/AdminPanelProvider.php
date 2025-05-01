@@ -4,6 +4,8 @@ namespace App\Providers\Filament;
 
 use App\Filament\Resources\ApiUserResource;
 use App\Filament\Resources\CategoryResource;
+use App\Filament\Resources\OrderResource;
+use App\Filament\Resources\UserResource;
 use App\Filament\Widgets\BestSellersTable;
 use App\Filament\Widgets\ConsumerGrowthChart;
 use App\Filament\Widgets\LatestOrders;
@@ -48,6 +50,8 @@ class AdminPanelProvider extends PanelProvider
             ->resources([
                 ApiUserResource::class,
                 CategoryResource::class,
+                UserResource::class,
+                OrderResource::class,
             ])
             ->pages([
                 Pages\Dashboard::class,
