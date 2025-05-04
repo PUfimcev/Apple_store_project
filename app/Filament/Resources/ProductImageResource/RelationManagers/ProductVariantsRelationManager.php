@@ -1,21 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\OrderResource\RelationManagers;
+namespace App\Filament\Resources\ProductImageResource\RelationManagers;
 
-use App\Models\Order;
 use App\Models\ProductVariant;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
-use Filament\Forms\Get;
-use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Str;
 
 class ProductVariantsRelationManager extends RelationManager
 {
@@ -24,23 +17,11 @@ class ProductVariantsRelationManager extends RelationManager
     public function form(Form $form): Form
     {
         return $form
-            ->schema(array(
-                Forms\Components\Select::make('product_variant_id')
-                    ->options(fn() => ProductVariant::pluck('name', 'id'))
-                    ->live()
-                    ->searchable()
+            ->schema([
+                Forms\Components\TextInput::make('name')
                     ->required()
-                    ->afterStateUpdated(function ($state, callable $set) {
-                        $set('properties', $state ? implode(', ', ProductVariant::find($state)->properties) : []);
-                    }),
-
-                Forms\Components\Textarea::make('properties')
-                    ->label('Properties')
-                    ->readonly()
-                    ->dehydrated(false),
-                Forms\Components\TextInput::make('quantity')
-                    ->required(),
-            ));
+                    ->maxLength(255),
+            ]);
     }
 
     public function table(Table $table): Table
@@ -49,24 +30,18 @@ class ProductVariantsRelationManager extends RelationManager
             ->recordTitleAttribute('name')
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\TextColumn::make('sku')
-                    ->label('SKU'),
-                Tables\Columns\TextColumn::make('quantity'),
-                Tables\Columns\TextColumn::make('price'),
                 Tables\Columns\TextColumn::make('properties')
                     ->label('Properties')
                     ->wrap()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\ImageColumn::make('images.url')
                     ->label('Images')
-                    ->limit(3)
-                    ->limitedRemainingText()
                     ->disk('public')
                     ->wrap()
                     ->toggleable(isToggledHiddenByDefault: true),
-
             ])
             ->filters([
+                //
             ])
             ->headerActions([
                 Tables\Actions\AttachAction::make()
@@ -89,23 +64,15 @@ class ProductVariantsRelationManager extends RelationManager
                             ->rows(3)
                             ->readonly()
                             ->dehydrated(false),
-                        Forms\Components\TextInput::make('quantity')
-                            ->required(),
-                        Forms\Components\TextInput::make('price')
-                            ->readonly(),
-
                     ]),
             ])
             ->actions([
-                Tables\Actions\DetachAction::make()
+                Tables\Actions\DetachAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DetachBulkAction::make(),
                 ]),
-            ])
-            ->modifyQueryUsing(fn(Builder $query) => $query->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ]));
+            ]);
     }
 }

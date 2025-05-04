@@ -11,11 +11,12 @@ use Filament\Notifications\Notification;
 use Filament\Notifications\Actions\Action;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Storage;
 
 
 class CategoryResource extends Resource
@@ -109,7 +110,11 @@ class CategoryResource extends Resource
                     ->columnSpanFull(),
                 Forms\Components\FileUpload::make('image_url')
                     ->disabled(fn($get) => $get('parent_id') === null)
-                    ->image(),
+                    ->image()
+                    ->directory('categories_images')
+                    ->disk('public')
+                    ->visibility('public')
+                    ->deleteUploadedFileUsing(fn ($state, $record) => $state ? Storage::disk('public')->delete('products_images/' . $state) : null),
             ]);
     }
 
@@ -128,7 +133,8 @@ class CategoryResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\ImageColumn::make('image_url'),
+                Tables\Columns\ImageColumn::make('image_url')
+                    ->wrap(),
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->dateTime('d.m.Y H:i')
                     ->sortable()
@@ -142,6 +148,15 @@ class CategoryResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->groups(
+                [
+                    Group::make('parent_id')
+                        ->getDescriptionFromRecordUsing(fn (Category $record): string => $record->category->name)
+                    ->label('Parent Category'),
+                    'created_at',
+                ]
+            )
+//            ->groupingSettingsInDropdownOnDesktop()
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
                 Tables\Filters\SelectFilter::make('parent_id')

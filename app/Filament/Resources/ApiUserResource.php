@@ -15,6 +15,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Storage;
 
 class ApiUserResource extends Resource
 {
@@ -129,7 +130,11 @@ class ApiUserResource extends Resource
                 Forms\Components\DateTimePicker::make('password_reset_expiration'),
                 Forms\Components\DateTimePicker::make('last_login_at'),
                 Forms\Components\FileUpload::make('profile_picture')
-                    ->image(),
+                    ->image()
+                    ->directory('profile_images')
+                    ->disk('public')
+                    ->visibility('public')
+                    ->deleteUploadedFileUsing(fn ($state, $record) => $state ? Storage::disk('public')->delete('products_images/' . $state) : null),
             ]);
     }
 
@@ -147,8 +152,10 @@ class ApiUserResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('last_name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('profile_picture')
-                    ->searchable(),
+                 Tables\Columns\ImageColumn::make('profile_picture')
+                     ->label('Images')
+                     ->disk('public')
+                     ->height(50),
                 Tables\Columns\TextColumn::make('day_of_birth')
                     ->date('d.m.Y')
                     ->sortable(),
@@ -156,6 +163,7 @@ class ApiUserResource extends Resource
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('address')
+                    ->wrap()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('city')
