@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
     {
 
         $this->call([
-            ApiUserSeeder::class,
+//            ApiUserSeeder::class,
 //            DeliveryAddressSeeder::class,
 //            BookmarkSeeder::class,
 //            CategorySeeder::class,
@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
 //            BookmarkProductVariantSeeder::class,
 //            CartProductVariantSeeder::class,
 //            OrderProductVariantSeeder::class,
+//            UserRoleSeeder::class,
 //            ProductImageProductVariantSeeder::class,
         ]);
         // User::factory(10)->create();

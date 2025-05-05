@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Middleware\SubdomainMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
