@@ -106,6 +106,11 @@ class CategoryResource extends Resource
                     ->label('Pathname')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\ToggleButtons::make('is_new')
+                    ->label('Is a new category?')
+                    ->boolean()
+                    ->grouped()
+                    ->helperText('This field is used to mark the category as new.'),
                 Forms\Components\Textarea::make('description')
                     ->columnSpanFull(),
                 Forms\Components\FileUpload::make('image_url')
@@ -135,6 +140,7 @@ class CategoryResource extends Resource
                     ->searchable(),
                 Tables\Columns\ImageColumn::make('image_url')
                     ->wrap(),
+                Tables\Columns\ToggleColumn::make('is_new'),
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->dateTime('d.m.Y H:i')
                     ->sortable()

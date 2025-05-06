@@ -34,6 +34,7 @@ class ViewCategory extends ViewRecord
             TextEntry::make('parent_name')->label('Parent category name')->weight(FontWeight::Bold),
             TextEntry::make('slug')->label('URL')->weight(FontWeight::Bold),
             TextEntry::make('name')->label('Name')->weight(FontWeight::Bold),
+            TextEntry::make('is_new')->label('Is new')->weight(FontWeight::Bold)->formatStateUsing(fn ($state) => $state ? 'yes' : 'no'),
             TextEntry::make('description')->label('Description')->weight(FontWeight::Bold),
             TextEntry::make('deleted_at')->label('Deleting date')->dateTime('d.m.Y H:i')->weight(FontWeight::Bold),
             TextEntry::make('updated_at')->label('Updating date')->dateTime('d.m.Y H:i')->weight(FontWeight::Bold),

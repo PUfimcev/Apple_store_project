@@ -40,14 +40,19 @@ class SubcategoriesRelationManager extends RelationManager
                     ->maxLength(255),
                 Forms\Components\Textarea::make('description')
                     ->columnSpanFull(),
+                Forms\Components\ToggleButtons::make('is_new')
+                    ->label('Is a new category?')
+                    ->boolean()
+                    ->grouped()
+                    ->helperText('This field is used to mark the category as new.'),
                 Forms\Components\FileUpload::make('image_url')
                     ->disabled(fn($get) => $get('parent_id') === null)
                     ->image()
                     ->directory('categories_images')
                     ->disk('public')
                     ->visibility('public')
-                    ->dehydrateStateUsing(fn ($state) => Storage::url($state))
-                    ->deleteUploadedFileUsing(fn ($state, $record) => $state ? Storage::disk('public')->delete('products_images/' . $state) : null),
+                    ->dehydrateStateUsing(fn($state) => Storage::url($state))
+                    ->deleteUploadedFileUsing(fn($state, $record) => $state ? Storage::disk('public')->delete('products_images/' . $state) : null),
 
             ]);
     }
@@ -127,7 +132,7 @@ class SubcategoriesRelationManager extends RelationManager
                             ->body('The Category has been deleted successfully.')
                             ->send();
                     })
-                ->requiresConfirmation()
+                    ->requiresConfirmation()
                     ->modalHeading('Force Delete Category')
                     ->modalDescription('Are you sure you want to force delete this category?')
                     ->modalSubmitActionLabel('Force Delete'),
@@ -141,26 +146,26 @@ class SubcategoriesRelationManager extends RelationManager
 
                             foreach ($records as $record) {
 
-                            Notification::make()
-                                ->title('Deleted successfully')
-                                ->body("Category $record->name has been deleted.")
-                                ->success()
-                                ->actions([
-                                    Action::make('Read')
-                                        ->button()
-                                        ->markAsRead(),
-                                    Action::make('Unread')
-                                        ->button()
-                                        ->markAsUnread(),
-                                ])
-                                ->sendToDatabase(auth()->user());
-                            $records->each->delete();
-                            redirect()->route('filament.admin.resources.categories.index');
-                            Notification::make()
-                                ->success()
-                                ->title('Category deleted')
-                                ->body('The Category has been deleted successfully.')
-                                ->send();
+                                Notification::make()
+                                    ->title('Deleted successfully')
+                                    ->body("Category $record->name has been deleted.")
+                                    ->success()
+                                    ->actions([
+                                        Action::make('Read')
+                                            ->button()
+                                            ->markAsRead(),
+                                        Action::make('Unread')
+                                            ->button()
+                                            ->markAsUnread(),
+                                    ])
+                                    ->sendToDatabase(auth()->user());
+                                $records->each->delete();
+                                redirect()->route('filament.admin.resources.categories.index');
+                                Notification::make()
+                                    ->success()
+                                    ->title('Category deleted')
+                                    ->body('The Category has been deleted successfully.')
+                                    ->send();
                             }
                         }),
                     Tables\Actions\ForceDeleteBulkAction::make()
@@ -168,18 +173,18 @@ class SubcategoriesRelationManager extends RelationManager
                         ->action(function ($records) {
                             foreach ($records as $record) {
 
-                            Notification::make()
-                                ->title('Force deleted successfully')
-                                ->body("Category $record->name has been deleted from DB.")
-                                ->success()
-                                ->sendToDatabase(auth()->user());
-                            $records->each->forceDelete();
-                            redirect()->route('filament.admin.resources.categories.index');
-                            Notification::make()
-                                ->success()
-                                ->title('Category deleted')
-                                ->body('The Category has been deleted successfully.')
-                                ->send();
+                                Notification::make()
+                                    ->title('Force deleted successfully')
+                                    ->body("Category $record->name has been deleted from DB.")
+                                    ->success()
+                                    ->sendToDatabase(auth()->user());
+                                $records->each->forceDelete();
+                                redirect()->route('filament.admin.resources.categories.index');
+                                Notification::make()
+                                    ->success()
+                                    ->title('Category deleted')
+                                    ->body('The Category has been deleted successfully.')
+                                    ->send();
                             }
                         })
                         ->modalHeading('Force Delete Category')

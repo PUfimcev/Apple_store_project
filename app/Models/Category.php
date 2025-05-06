@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,6 +10,10 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * @method static where(string $string, $null)
+ * @method static select(string[] $array)
+ */
 class Category extends Model
 {
     use HasFactory, Notifiable, softDeletes;
@@ -63,6 +66,11 @@ class Category extends Model
     {
         return $this->category ? $this->category->name : null;
 
+    }
+
+    public function scopeParent($query)
+    {
+        return $query->whereNull('parent_id');
     }
 
 }
