@@ -14,4 +14,5 @@ Route::middleware(['auth:api'])->group(function () {
 
 Route::get('/categories', [CategoryController::class, 'getParentCategories']);
 Route::get('/products/best-sellers', [ProductController::class, 'getBestSellers']);
+Route::get('/products/new-arrivals', [CategoryController::class, 'getNewProducts']);
 
