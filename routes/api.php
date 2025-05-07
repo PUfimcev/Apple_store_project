@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Middleware\SubdomainMiddleware;
+use App\Http\Controllers\API\{ CategoryController, ProductController};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -11,4 +11,8 @@ Route::middleware(['auth:api'])->group(function () {
         return $request->user();
     });
 });
+
+Route::get('/categories', [CategoryController::class, 'getParentCategories']);
+Route::get('/products/best-sellers', [ProductController::class, 'getBestSellers']);
+Route::get('/products/new-arrivals', [CategoryController::class, 'getNewProducts']);
 

@@ -17,7 +17,7 @@ class BestSellersTable extends BaseWidget
 
     public function table(Table $table): Table
     {
-        $bestSellersIds = Order::with('ProductVariants')->get()
+        $bestSellersIds = Order::with('ProductVariants')->where('status', 'completed')->get()
             ->flatMap->ProductVariants
             ->mapToGroups(fn($item) => [$item->id => $item->pivot->quantity])
             ->map->sum()

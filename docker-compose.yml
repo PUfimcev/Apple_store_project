@@ -23,8 +23,10 @@ services:
             - sail
         depends_on:
             - mysql
+            - phpmyadmin
+
     mysql:
-        image: 'mysql/mysql-server:8.0'
+        image: 'mysql:8.0'
         ports:
             - '${FORWARD_DB_PORT:-3306}:3306'
         environment:
@@ -36,15 +38,11 @@ services:
             MYSQL_ALLOW_EMPTY_PASSWORD: 1
         volumes:
             - 'sail-mysql:/var/lib/mysql'
-            - './vendor/laravel/sail/database/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
+            - './docker/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
         networks:
             - sail
         healthcheck:
-            test:
-                - CMD
-                - mysqladmin
-                - ping
-                - '-p${DB_PASSWORD}'
+            test: ['CMD','mysqladmin', 'ping','-p${DB_PASSWORD}']
             retries: 3
             timeout: 5s
     phpmyadmin:

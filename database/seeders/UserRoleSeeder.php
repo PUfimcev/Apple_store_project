@@ -14,7 +14,7 @@ class UserRoleSeeder extends Seeder
      */
     public function run(): void
     {
-      $superAdminRole = Role::where('name','super_admin')->first();
+      $superAdminRole = Role::firstOrCreate(['name' => 'super_admin']);
       $superAdminUser = User::find(1);
 
         if ($superAdminUser && $superAdminRole) {

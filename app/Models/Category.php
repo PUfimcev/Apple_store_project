@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,6 +11,12 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * @method static where(string $string, $null)
+ * @method static select(string[] $array)
+ * @method static newProducts()
+ * @method static parentCategories()
+ */
 class Category extends Model
 {
     use HasFactory, Notifiable, softDeletes;
@@ -21,7 +27,8 @@ class Category extends Model
         'slug',
         'name',
         'description',
-        'image_url'
+        'image_url',
+        'is_new',
     ];
 
     protected $appends = ['parent_name'];
@@ -59,10 +66,32 @@ class Category extends Model
         return $this->hasManyThrough(ProductVariant::class, Product::class);
     }
 
-    public function getParentNameAttribute()
-    {
-        return $this->category ? $this->category->name : null;
 
+    public function ParentName(): Attribute
+    {
+        return new Attribute(
+            get: fn () => $this->parent_id ? $this->category->name : null,
+        );
     }
+
+
+    /**
+     * @param $query
+     * @return mixed
+     */
+    public function scopeParentCategories($query): mixed
+    {
+        return $query->whereNull('parent_id');
+    }
+
+    /**
+     * @param $query
+     * @return mixed
+     */
+    public function scopeNewProducts($query): mixed
+    {
+        return $query->whereNotNull('parent_id')->where('is_new', true);
+    }
+
 
 }
