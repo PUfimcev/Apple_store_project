@@ -11,6 +11,9 @@ use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * @method static whereIn(string $string, $bestSellerProductVariantIds)
+ */
 class ProductVariant extends Model
 {
     use HasFactory, Notifiable, softDeletes;
@@ -27,17 +30,13 @@ class ProductVariant extends Model
     ];
     protected $dates = ['deleted_at'];
 
-//    protected $casts = [
-//        'properties' => 'array',
-//    ];
+    protected $touches = ['product'];
+
+    protected $casts = [
+        'properties' => 'array',
+    ];
 
 
-    protected function casts(): array
-    {
-        return [
-            'properties' => 'array',
-        ];
-    }
     /**
      * @return BelongsTo
      */

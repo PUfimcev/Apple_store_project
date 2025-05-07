@@ -30,6 +30,13 @@ return [
 
     'disks' => [
 
+        'logs' => [
+            'driver' => 'local',
+            'root' => storage_path('logs'),
+            'throw' => false,
+            'report' => false,
+        ],
+
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app/private'),
