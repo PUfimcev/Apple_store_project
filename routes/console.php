@@ -20,5 +20,7 @@ Artisan::command('log:clear', function () {
     $this->info('Logs cleared successfully.');
 })->purpose('Clear application logs')->weekly();
 
+Schedule::command('telescope:prune --hours=48')->daily();
+
 Schedule::command('app:optimizer')->daily();
 
