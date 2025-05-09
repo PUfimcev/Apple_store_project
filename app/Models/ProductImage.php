@@ -15,6 +15,7 @@ class ProductImage extends Model
         'url'
     ];
 
+    protected $touches = ['productVariants'];
     /**
      * @return BelongsToMany
      */

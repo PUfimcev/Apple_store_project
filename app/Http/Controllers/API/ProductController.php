@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\APIController;
+use App\Http\Resources\BestSellerResource;
 use App\Models\Order;
 use App\Models\ProductVariant;
 use Exception;
 use Illuminate\Http\JsonResponse;
 
 
-class ProductController extends Controller
+class ProductController extends APIController
 {
     public function getBestSellers(): JsonResponse
     {
@@ -19,37 +20,31 @@ class ProductController extends Controller
 
         try {
 
-        $bestSellerProductVariantIds = Order::where('status', 'completed')->get()
-            ->flatMap->ProductVariants
-            ->mapToGroups(fn($item) => [$item->id => $item->pivot->quantity])
-            ->map->sum()
-            ->sortDesc()
-            ->take(5)
-            ->keys()
-            ->toArray();
+            $bestSellerProductVariantIds = Order::where('status', 'completed')->get()
+                ->flatMap->ProductVariants
+                ->mapToGroups(fn($item) => [$item->id => $item->pivot->quantity])
+                ->map->sum()
+                ->sortDesc()
+                ->take(5)
+                ->keys()
+                ->toArray();
 
-        $bestSellerProducts = ProductVariant::whereIn('id', $bestSellerProductVariantIds)
-            ->with(['product' => function ($query) {
-                $query->select('id','slug','name', 'description', 'price', 'discount_price', 'image_url');
-            }])
-            ->get()
-            ->map
-            ->product;
+            $bestSellerProducts = ProductVariant::whereIn('id', $bestSellerProductVariantIds)
+                ->with(['product' => function ($query) {
+                    $query->select('id', 'slug', 'name', 'description', 'price', 'discount_price', 'image_url');
+                }])
+                ->get()
+                ->map
+                ->product;
 
             if ($bestSellerProducts->isEmpty()) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'No categories found',
-                ], 404);
+                return $this->responseError('No products found', 404);
             }
-            return $bestSellerProducts->toResourceCollection()->response();
+            return $this->responseSuccess(BestSellerResource::collection($bestSellerProducts), 200);
 
         } catch (Exception $e) {
             logger($e->getMessage());
-            return response()->json([
-                'status' => 'error',
-                'massage' => 'Failed to fetch best-sellers',
-            ], 500);
+            return $this->responseError('Failed to fetch best-sellers', 500);
         }
     }
 }

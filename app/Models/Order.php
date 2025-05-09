@@ -10,6 +10,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * @method static where(string $string, string $string1)
+ */
 class Order extends Model
 {
     use HasFactory, Notifiable, softDeletes;

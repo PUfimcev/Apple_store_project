@@ -33,6 +33,7 @@ class Category extends Model
 
     protected $appends = ['parent_name'];
 
+    protected $touches = ['category'];
 
     /**
      * @return HasMany

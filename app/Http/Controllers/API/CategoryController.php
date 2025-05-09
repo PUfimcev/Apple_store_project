@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\APIController;
+use App\Http\Resources\{CategoryInMainPageResource, NewProductResource};
 use App\Models\Category;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-class CategoryController extends Controller
+class CategoryController extends APIController
 {
+    /**
+     * @return JsonResponse
+     */
     public function getParentCategories(): JsonResponse
     {
         // This method fetches all parent categories from the database and returns them as a JSON response.
@@ -16,25 +21,22 @@ class CategoryController extends Controller
         // If an exception occurs, it logs the error and returns a 500 error.
 
         try {
-            $categories = Category::parentCategories()->get(['id', 'slug', 'name']);
 
+            $categories = Category::parentCategories()->get();
             if ($categories->isEmpty()) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'No categories found',
-                ], 404);
+                return $this->responseError('No categories found', 404);
             }
-            return $categories->toResourceCollection()->response();
+            return $this->responseSuccess(CategoryInMainPageResource::collection($categories), 200);
 
         } catch (Exception $e) {
             logger($e->getMessage());
-            return response()->json([
-                'status' => 'error',
-                'massage' => 'Failed to fetch categories',
-            ], 500);
+            return $this->responseError('Failed to fetch categories', 500);
         }
     }
 
+    /**
+     * @return JsonResponse
+     */
     public function getNewProducts(): JsonResponse
     {
         // This method fetches all parent categories from the database and returns them as a JSON response.
@@ -42,23 +44,17 @@ class CategoryController extends Controller
         // If an exception occurs, it logs the error and returns a 500 error.
 
         try {
-            $newProducts = Category::newProducts()->get(['id','parent_id', 'slug', 'name', 'description', 'image_url', 'is_new',])->makeHidden(['created_at', 'updated_at', 'deleted_at', 'category']);
+            $newProducts = Category::newProducts()->get(['id','parent_id', 'slug', 'name', 'description', 'image_url', 'is_new',]);
 
 
             if ($newProducts->isEmpty()) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'No new products found',
-                ], 404);
+                return $this->responseError('No new products found', 404);
             }
-            return $newProducts->toResourceCollection()->response();
+            return $this->responseSuccess(NewProductResource::collection($newProducts), 200);
 
         } catch (Exception $e) {
             logger($e->getMessage());
-            return response()->json([
-                'status' => 'error',
-                'massage' => 'Failed to fetch categories',
-            ], 500);
+            return $this->responseError('Failed to fetch new products', 500);
         }
     }
 
