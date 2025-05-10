@@ -25,7 +25,7 @@ class ProductController extends APIController
                 ->mapToGroups(fn($item) => [$item->id => $item->pivot->quantity])
                 ->map->sum()
                 ->sortDesc()
-                ->take(5)
+                ->take(4)
                 ->keys()
                 ->toArray();
 
