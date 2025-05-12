@@ -1,38 +1,28 @@
 <script setup>
 import {RouterLink, useRouter} from "vue-router";
-import NavBar from "@/components/Navigation/navBar.vue";
+import NavBarGlobal from "@/components/routes/navBarGlobal.vue";
+import NavBarMob from "@/components/routes/navBarMob.vue";
 
 </script>
 
 <template>
-    <header class="w-100">
+    <header class="w-100  fixed-top">
 
-        <div class="header_wrapper w-80">
-            <RouterLink :to="{name: 'main'}" class="logo"></RouterLink>
-           <NavBar/>
+        <div class="header_wrapper w-100 h-100">
+            <NavBarGlobal class="d-none d-lg-block"/>
+            <navBarMob class="d-lg-none"/>
         </div>
     </header>
 </template>
 
-<style  scoped lang="sass">
-.logo
-    background-image: url("../../assets/icons/apple_icons.svg")
-    background-size: contain
-    background-position: center
-    background-repeat: no-repeat
-    padding: 0.75rem
-    transition: 0.4s
-    &:hover
-        padding: 0.9rem
+<style scoped lang="sass">
 
-@media (min-width: 1024px)
-    header
-        display: flex
-        place-items: center
+header
+    height: 3.15rem
+    background: rgba(255,255,255,0.8)
+    -webkit-backdrop-filter: saturate(1.8) blur(20px)
+    backdrop-filter: saturate(1.8) blur(20px)
 
-        &.header_wrapper
-            display: flex
-            place-items: flex-start
-            flex-wrap: wrap
+
 
 </style>

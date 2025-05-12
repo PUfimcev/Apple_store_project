@@ -1,9 +1,9 @@
 @import './base.css';
+@import "bootstrap-icons/font/bootstrap-icons.css";
 /*@import "tailwindcss";*/
 
 #app {
     width: min(100%, 1280px);
-    /*max-width: 1280px;*/
     margin: 0 auto;
     font-weight: normal;
     max-height: 100vh;
@@ -19,18 +19,23 @@ header, main, footer{
 
 a{
     text-decoration: none !important;
+    color: var(--color-text);
     transition: 0.4s !important;
+    margin: 0;
+
 }
 
+.router-link-active{
+    font-weight: bolder !important;
+}
+
+
 @media (hover: hover) {
-    a:hover {
+    a.nav-link:hover {
         transform: scale(1.2);
     }
 }
 
 @media (min-width: 1024px) {
-    body {
-        display: flex;
-        /*place-items: center;*/
-    }
+
 }

@@ -3,7 +3,7 @@ import MainView from '../views/pages/MainView.vue'
 import navBarRoutes from "@/router/navBarRoutes.js";
 
 const router = createRouter({
-    history: createWebHistory(import.meta.env.VUE_BASE_URL),
+    history: createWebHistory(),
     routes: [
         ...navBarRoutes,
     ],

@@ -10,19 +10,13 @@ class APIController extends Controller
     {
         // This method returns a JSON response with a success status and the provided data.
         // It is used to standardize the response format across the API.
-        return response()->json([
-            'status' => 'success',
-            'data' => $data,
-        ], $code);
+        return response()->json($data,$code);
     }
 
     public function responseError($message, $code = 500): JsonResponse
     {
         // This method returns a JSON response with an error status and the provided message.
         // It is used to standardize the error response format across the API.
-        return response()->json([
-            'status' => 'error',
-            'message' => $message,
-        ], $code);
+        return response()->json($message, $code);
     }
 }
