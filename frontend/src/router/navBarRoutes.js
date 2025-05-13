@@ -1,5 +1,4 @@
-import MainView from "@/views/pages/MainView.vue";
-import NotFoundView from "@/views/pages/NotFoundView.vue";
+import MainView from "@/views/pages/main/MainView.vue";
 
 export default [
     {
@@ -8,16 +7,13 @@ export default [
         component: MainView,
     },
     {
-        path: '/about',
-        name: 'about',
-        // route level code-splitting
-        // this generates a separate chunk (About.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () => import('../views/pages/AboutView.vue'),
+        path: '/store',
+        name: 'store',
+        component: () => import('../views/pages/store/StoreView.vue'),
     },
     {
-        path: '/:pathMatch(.*)*',
-        name: '404',
-        component: () => import('../views/pages/NotFoundView.vue'),
-    }
+        path: '/:categorySlug',
+        name: 'category',
+        component: () => import('../views/pages/category/CategoryView.vue'),
+    },
 ];

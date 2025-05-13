@@ -10,13 +10,19 @@ import {
     BNavItemDropdown
 } from "bootstrap-vue-next";
 import { onMounted, ref} from "vue";
-import {useRestAPIService} from "@/components/composables/useRestAPIService.js";
+import {getCategoriesData} from "@/components/routes/services/getCategoriesData.js";
 
-const { data, fetchAllData} = useRestAPIService('/api/categories');
 const isAuthorized = ref(false);
 
+const data = ref([]);
+const error = ref(null);
+const loading = ref(true);
+
 onMounted(async () => {
-    fetchAllData();
+    const result = await getCategoriesData('/api/categories');
+    data.value = result.data;
+    error.value = result.error;
+    loading.value = result.loading;
 });
 
 </script>
@@ -26,7 +32,7 @@ onMounted(async () => {
         <BNavbarBrand :to="{name: 'main'}" class="logo"></BNavbarBrand>
         <BNavbarNav class="page_routes">
             <BNavItem to="/store">Store</BNavItem>
-            <BNavItem v-for="item in data" :key="item.id" :to="item.slug">{{ item.name }}</BNavItem>
+            <BNavItem v-for="{ id, slug, name } in data" :key="id" :to="slug">{{ name }}</BNavItem>
         </BNavbarNav>
         <BNavbarNav class="btn_nav_group d-flex justify-content-center align-items-center">
             <BNavItemDropdown right class="small-dropdown btn-sm" toggle-class="text-decoration-none" no-caret>
