@@ -7,7 +7,6 @@ use App\Http\Resources\{CategoryInMainPageResource, NewProductResource};
 use App\Models\Category;
 use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class CategoryController extends APIController
 {

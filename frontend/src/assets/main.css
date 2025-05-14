@@ -3,39 +3,13 @@
 /*@import "tailwindcss";*/
 
 #app {
-    width: min(100%, 1280px);
-    margin: 0 auto;
     font-weight: normal;
     max-height: 100vh;
-}
-
-header, main, footer{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    width: 100%;
 }
 
 a{
     text-decoration: none !important;
     color: var(--color-text);
-    transition: 0.4s !important;
     margin: 0;
-
-}
-
-.router-link-active{
-    font-weight: bolder !important;
-}
-
-
-@media (hover: hover) {
-    a.nav-link:hover {
-        transform: scale(1.2);
-    }
-}
-
-@media (min-width: 1024px) {
 
 }

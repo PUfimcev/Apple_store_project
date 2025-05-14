@@ -9,8 +9,8 @@ import {
     BNavItem,
     BNavItemDropdown
 } from "bootstrap-vue-next";
-import { onMounted, ref} from "vue";
-import {getCategoriesData} from "@/components/routes/services/getCategoriesData.js";
+import {onMounted, ref} from "vue";
+import {getAllData} from "@/components/services/getAllData.js";
 
 const isAuthorized = ref(false);
 
@@ -19,11 +19,13 @@ const error = ref(null);
 const loading = ref(true);
 
 onMounted(async () => {
-    const result = await getCategoriesData('/api/categories');
+
+    const result = await getAllData('/api/categories');
     data.value = result.data;
     error.value = result.error;
     loading.value = result.loading;
 });
+
 
 </script>
 
@@ -78,8 +80,6 @@ onMounted(async () => {
             justify-content: space-evenly
             align-items: center
             width: 80%
-            color: var(--color-text) !important
-
 
         .btn_nav_group
             width: 20%
@@ -115,9 +115,26 @@ onMounted(async () => {
                 margin-left: 0.7rem
 
 
-@media(min-width: 993px)
+@media (hover: hover)
 
+.global_nav_bar
+    .container-fluid
+        .page_routes
+            .nav-item
+                transition: 0.4s
+
+            .nav-item:hover
+                transform: scale(1.2)
+
+
+@media(min-width: 993px)
     .global_nav_bar
         padding: 0 1.375rem
+
+        .container-fluid
+            .page_routes
+                .nav-item
+                    :deep(.router-link-active)
+                        font-weight: bolder !important
 
 </style>
