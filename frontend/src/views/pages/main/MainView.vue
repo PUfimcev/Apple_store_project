@@ -1,6 +1,8 @@
 <script setup>
-import {onMounted, ref, watchEffect} from "vue";
+import {onMounted, ref} from "vue";
 import {getAllData} from "@/components/services/getAllData.js";
+import Bestseller from "@/views/pages/main/bestseller/Bestseller.vue";
+import NewProduct from "@/views/pages/main/newProduct/NewProduct.vue";
 
 const NewArrivalsData = ref([]);
 const error = ref(null);
@@ -22,7 +24,6 @@ onMounted(() => fetchNewArrivals());
 
 <template>
     <div class="main_page w-100">
-
-
+        <NewProduct v-for="(newProduct, index) in NewArrivalsData" :newProduct="newProduct" :index="index" :key="index"/>
     </div>
 </template>
