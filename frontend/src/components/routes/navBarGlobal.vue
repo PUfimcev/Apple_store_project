@@ -15,15 +15,10 @@ import {getAllData} from "@/components/services/getAllData.js";
 const isAuthorized = ref(false);
 
 const data = ref([]);
-const error = ref(null);
-const loading = ref(true);
-
 onMounted(async () => {
 
     const result = await getAllData('/api/categories');
     data.value = result.data;
-    error.value = result.error;
-    loading.value = result.loading;
 });
 
 
@@ -46,8 +41,8 @@ onMounted(async () => {
                 <BDropdownItem v-else to="/login">Log in</BDropdownItem>
             </BNavItemDropdown>
 
-            <BButton @click="" class="btn_searching"></BButton>
-            <BButton @click="" class="btn_cart"></BButton>
+            <BNavItem><BButton @click="" class="btn_searching"></BButton></BNavItem>
+            <BNavItem><BButton @click="" class="btn_cart"></BButton></BNavItem>
         </BNavbarNav>
     </BNavbar>
 </template>
@@ -112,7 +107,7 @@ onMounted(async () => {
                 width: 1.25rem
                 height: 1.25rem
                 border: 0
-                margin-left: 0.7rem
+
 
 
 @media (hover: hover)
