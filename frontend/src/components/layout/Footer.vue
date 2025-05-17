@@ -1,7 +1,6 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import {getAllData} from "@/components/services/getAllData.js";
-import {BNav, BNavItem} from "bootstrap-vue-next";
 
 const data = ref([]);
 const error = ref(null);
@@ -35,7 +34,7 @@ onMounted(async () => {
                                 </h6>
                                 <p>
                                     Here you can use rows and columns to organize your footer
-                                    content. Lorem ipsum dolor sit amet, consectetur adipisicing
+                                    content. Lorem ipsum dolor sit amet, consectetur
                                     elit.
                                 </p>
                             </div>
@@ -51,27 +50,6 @@ onMounted(async () => {
                                     </li>
                                 </ul>
                             </div>
-                            <!-- Grid column -->
-
-                            <hr class="w-100 clearfix d-md-none"/>
-
-                            <!-- Grid column -->
-                            <div class="col-md-3 col-lg-3 col-xl-3 mx-auto pb-2 pb-lg-0">
-                                <h6 class=" mb-2 font-weight-bold">Products</h6>
-                                <p>
-                                    <a class="text-black">MDBootstrap</a>
-                                </p>
-                                <p>
-                                    <a class="text-black">MDWordPress</a>
-                                </p>
-                                <p>
-                                    <a class="text-black">BrandFlow</a>
-                                </p>
-                                <p>
-                                    <a class="text-black">Bootstrap Angular</a>
-                                </p>
-                            </div>
-
                             <!-- Grid column -->
                             <hr class="w-100 clearfix d-md-none"/>
 

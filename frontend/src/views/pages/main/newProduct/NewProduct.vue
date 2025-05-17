@@ -47,6 +47,15 @@ const {newProduct, index} = toRefs(props);
     .newProduct__container
         width: 100%
         gap: 2rem
+        .newProduct_title
+            position: relative
+            &::after
+                position: absolute
+                content: 'new'
+                color: #ff0000
+                font-size: 1rem
+                font-weight: bold
+                margin-left: 0.5rem
         .newProduct_btn-group
             width: 90%
             .btn

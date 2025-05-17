@@ -5,11 +5,7 @@ import {ref, watchEffect} from "vue";
 const route = useRoute();
 const subcategorySlug = ref(null);
 
-watchEffect(() =>{
-
-    subcategorySlug.value = route.params.subcategorySlug
-    console.log(subcategorySlug.value)}
-);
+watchEffect(() =>  subcategorySlug.value = route.params.subcategorySlug);
 </script>
 
 <template>

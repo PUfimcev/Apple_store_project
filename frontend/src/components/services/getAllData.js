@@ -5,10 +5,11 @@ export const getAllData = async (endpoint, params = {}) => {
     const { fetchAllData} = useRestAPIService(endpoint);
     let data = [];
     let error = null;
-    let loading;
+    let loading = true;
+
 
     try {
-        const response = await fetchAllData(params = {});
+        const response = await fetchAllData(params);
         data = response.data;
     } catch (err) {
         error = err;
