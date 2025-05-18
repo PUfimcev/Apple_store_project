@@ -16,6 +16,10 @@ use Illuminate\Notifications\Notifiable;
  * @method static select(string[] $array)
  * @method static newProducts()
  * @method static parentCategories()
+ * @method static find(mixed $id)
+ * @property mixed $id
+ * @property mixed $slug
+ * @property mixed $parent_id
  */
 class Category extends Model
 {
@@ -36,6 +40,18 @@ class Category extends Model
     protected $touches = ['category'];
 
     /**
+     * @return string
+     */
+//    public function getRouteKeyName(): string
+//    {
+//        // This method is used to specify the column that should be used for route model binding.
+//        // In this case, it returns 'slug', which means that when a route parameter is passed,
+//        // Laravel will look for a category with the corresponding slug in the database.
+//
+//        return 'slug';
+//    }
+
+    /**
      * @return HasMany
      */
     public function subcategories(): HasMany
@@ -49,6 +65,14 @@ class Category extends Model
     public function products(): HasMany
     {
         return $this->hasMany(Product::class);
+    }
+
+    /**
+     * @return HasManyThrough
+     */
+    public function allProducts(): hasManyThrough
+    {
+        return $this->hasManyThrough(Product::class, __CLASS__, 'parent_id', 'category_id', 'id', 'id');
     }
 
     /**

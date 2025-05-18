@@ -75,12 +75,14 @@ const showCloseMobNav = (select) => {
 
 .mob_nav_bar
     width: min(100%, 996px)
+    max-width: 100dvw
     height: 100%
     font-size: 12px
     text-align: center
 
     .container-fluid
-
+        width: 100% !important
+        margin: 0 !important
         .logo
             background-image: url("../../assets/icons/apple_icons.svg")
             background-size: contain
@@ -119,9 +121,6 @@ const showCloseMobNav = (select) => {
 
 
         .btn_nav_group
-            width: 20%
-            margin-right: 1rem
-
             .small-dropdown
                 .bi-person
                     font-size: 1.4rem

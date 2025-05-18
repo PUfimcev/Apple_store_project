@@ -12,7 +12,14 @@ Route::middleware(['auth:api'])->group(function () {
     });
 });
 
-Route::get('/categories', [CategoryController::class, 'getParentCategories']);
-Route::get('/products/best-sellers', [ProductController::class, 'getBestSellers']);
-Route::get('/products/new-arrivals', [CategoryController::class, 'getNewProducts']);
+Route::controller(CategoryController::class)->group(function () {
+    Route::get('/categories', 'getParentCategories');
+    Route::get('/{category:slug}', 'getCategory');
+});
+
+Route::controller(ProductController::class)->group(function () {
+    Route::get('/products/best-sellers', 'getBestSellers');
+    Route::get('/products/new-arrivals', 'getNewProducts');
+});
+
 
