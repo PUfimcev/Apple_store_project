@@ -6,7 +6,7 @@ import NavBarMob from "@/components/routes/navBarMob.vue";
 </script>
 
 <template>
-    <header class="w-100  fixed-top">
+    <header class="fixed-top">
 
         <div class="header_wrapper w-100 h-100">
             <NavBarGlobal class="d-none d-lg-block"/>
@@ -18,6 +18,7 @@ import NavBarMob from "@/components/routes/navBarMob.vue";
 <style scoped lang="sass">
 
 header
+    width: 100dvw
     height: 3.15rem
     background: rgba(255,255,255,0.8)
     -webkit-backdrop-filter: saturate(1.8) blur(20px)
