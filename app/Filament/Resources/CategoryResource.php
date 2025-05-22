@@ -114,7 +114,7 @@ class CategoryResource extends Resource
                 Forms\Components\Textarea::make('description')
                     ->columnSpanFull(),
                 Forms\Components\FileUpload::make('image_url')
-                    ->disabled(fn($get) => $get('parent_id') === null)
+//                    ->disabled(fn($get) => $get('parent_id') === null)
                     ->image()
                     ->directory('categories_images')
                     ->disk('public')

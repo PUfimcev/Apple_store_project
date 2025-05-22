@@ -5,6 +5,11 @@ import navBarRoutes from "@/router/navBarRoutes.js";
 const routes = [
     ...navBarRoutes,
     {
+        path: '/:productSlug',
+        name: 'product',
+        component: () => import('../views/pages/product/ProductView.vue'),
+    },
+    {
         path: '/store/:subcategorySlug',
         name: 'productStore',
         component: () => import('../views/pages/store/productStore/ProductStoreView.vue'),

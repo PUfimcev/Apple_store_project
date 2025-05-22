@@ -5,6 +5,7 @@
 #app {
     font-weight: normal;
     max-height: 100vh;
+    background-color: rgba(235,235,235);
 }
 
 a{
@@ -12,4 +13,8 @@ a{
     color: var(--color-text);
     margin: 0;
 
+}
+
+h1, ul{
+    margin: 0 !important;
 }

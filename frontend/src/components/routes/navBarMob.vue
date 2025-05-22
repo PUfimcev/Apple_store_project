@@ -44,7 +44,7 @@ const showCloseMobNav = (select) => {
                       type="button" class="btn-close align-self-end p-2"
                       aria-label="Close"></BNavItem>
             <BNavItem to="/store"><h4 @click="showCloseMobNav(false)" class="m-0">Store</h4></BNavItem>
-            <BNavItem v-for="{ id, slug, name } in data" :key="id" :to="slug"><h4 @click="showCloseMobNav(false)"
+            <BNavItem v-for="{ id, slug, name } in data" :key="id" :to="{name: 'category', params: { categorySlug: slug }}"><h4 @click="showCloseMobNav(false)"
                                                                                   class="m-0">{{ name }}</h4></BNavItem>
         </BNavbarNav>
         <BNavbarNav class="btn_nav_group d-flex justify-content-center align-items-center ms-auto">
