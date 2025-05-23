@@ -15,5 +15,6 @@ export default [
         path: '/:categorySlug',
         name: 'category',
         component: () => import('../views/pages/category/CategoryView.vue'),
+        props: true
     },
 ];

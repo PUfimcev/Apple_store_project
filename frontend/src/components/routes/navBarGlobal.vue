@@ -14,6 +14,12 @@ import {getAllData} from "@/components/services/getAllData.js";
 
 const isAuthorized = ref(false);
 
+const pageTop = () => {
+    window.scrollTo({
+        top: 0,
+    });
+}
+
 const data = ref([]);
 onMounted(async () => {
 
@@ -28,10 +34,10 @@ onMounted(async () => {
     <BNavbar class="global_nav_bar mx-auto py-0">
         <BNavbarBrand :to="{name: 'main'}" class="logo"></BNavbarBrand>
         <BNavbarNav class="page_routes">
-            <BNavItem to="/store">Store</BNavItem>
-            <BNavItem v-for="{ id, slug, name } in data" :key="id" :to="slug">{{ name }}</BNavItem>
+            <BNavItem to="/store" @click="pageTop">Store</BNavItem>
+            <BNavItem v-for="{ id, slug, name } in data" :key="id" :to="{name: 'category', params: { categorySlug: slug }}" @click="pageTop">{{ name }}</BNavItem>
         </BNavbarNav>
-        <BNavbarNav class="btn_nav_group d-flex justify-content-center align-items-center">
+        <BNavbarNav class="btn_nav_group d-flex justify-content-end align-items-center">
             <BNavItemDropdown right class="small-dropdown btn-sm" toggle-class="text-decoration-none" no-caret>
                 <template #button-content>
                     <i class="bi bi-person"></i>
@@ -77,7 +83,7 @@ onMounted(async () => {
             width: 80%
 
         .btn_nav_group
-            width: 20%
+            width: 15%
             height: 100%
 
             .small-dropdown

@@ -8,7 +8,6 @@ import Main from "@/components/layout/Main.vue";
 </script>
 
 <template>
-
     <Header v-if="$route.name !== '404'"/>
     <Main/>
     <Footer v-if="$route.name !== '404'"/>

@@ -1,11 +1,20 @@
 <script setup>
 import {useRoute} from "vue-router";
-import {ref, watchEffect} from "vue";
+import {onMounted, ref, watch, watchEffect} from "vue";
 
-const route = useRoute();
-const subcategorySlug = ref(null);
+const route = useRoute()
+const subcategorySlug = ref('')
 
-watchEffect(() =>  subcategorySlug.value = route.params.subcategorySlug);
+
+watch(route, (newRoute) => {
+    subcategorySlug.value = newRoute.params.subcategorySlug
+    // fetchProductData()
+})
+onMounted(()=>{
+    subcategorySlug.value = route.params.subcategorySlug
+    // fetchProductData()
+})
+
 </script>
 
 <template>

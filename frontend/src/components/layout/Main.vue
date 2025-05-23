@@ -1,5 +1,11 @@
 <script setup>
+import {onMounted} from "vue";
 
+onMounted(() => {
+    document.documentElement.scrollTo(0, 0);
+    document.body.scrollTo(0, 0);
+    window.scrollTo(0, 0);
+})
 </script>
 
 <template>
@@ -26,11 +32,13 @@
 
 
 main
-    margin-top: 2.75rem
-    overscroll-behavior: contain
+    background-color: rgba(235,235,235) !important
+    padding-top: 2.75rem
+    overscroll-behavior: none
     width: 100dvw
 
     .wrapper
+        background-color: rgba(255,255,255) !important
         width: 100%
 
 </style>

@@ -20,7 +20,11 @@ onMounted(async () => {
     data.value = result.data;
 });
 
-
+const pageTop = () => {
+    window.scrollTo({
+        top: 0,
+    });
+}
 const showCloseMobNav = (select) => {
 
     const mobNav = document.getElementById('mob_nav_routes');
@@ -43,9 +47,8 @@ const showCloseMobNav = (select) => {
             <BNavItem @click="showCloseMobNav(false)" style="width: 20px; height: 20px; font-size: 1.25rem;"
                       type="button" class="btn-close align-self-end p-2"
                       aria-label="Close"></BNavItem>
-            <BNavItem to="/store"><h4 @click="showCloseMobNav(false)" class="m-0">Store</h4></BNavItem>
-            <BNavItem v-for="{ id, slug, name } in data" :key="id" :to="slug"><h4 @click="showCloseMobNav(false)"
-                                                                                  class="m-0">{{ name }}</h4></BNavItem>
+            <BNavItem to="/store" @click="pageTop"><h4 @click="showCloseMobNav(false)" class="m-0">Store</h4></BNavItem>
+            <BNavItem v-for="{ id, slug, name } in data" :key="id" :to="{name: 'category', params: { categorySlug: slug }}"><h4 @click="()=>{showCloseMobNav(false); pageTop(); }" class="m-0">{{ name }}</h4></BNavItem>
         </BNavbarNav>
         <BNavbarNav class="btn_nav_group d-flex justify-content-center align-items-center ms-auto">
             <BNavItemDropdown right class="small-dropdown btn-sm" toggle-class="text-decoration-none" no-caret>
@@ -83,6 +86,8 @@ const showCloseMobNav = (select) => {
     .container-fluid
         width: 100% !important
         margin: 0 !important
+        padding: 0 !important
+
         .logo
             background-image: url("../../assets/icons/apple_icons.svg")
             background-size: contain
