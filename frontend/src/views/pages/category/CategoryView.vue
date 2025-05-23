@@ -59,7 +59,7 @@ const icons = {
 }
 
 const fetchCategoryData = async () => {
-    categoryLoading.value = true
+    // categoryLoading.value = true
     const result = await getCategory(`/api`, categorySlug.value)
     categoryData.value = result.data[0]
     categoryError.value = result.error
@@ -96,12 +96,12 @@ onMounted(() => {
 
             <section v-else class="category__block w-100">
                 <nav v-if="categoryData" class="category__nav_block w-100">
-                    <div class="category_nav_wrapper mx-auto">
-                        <ul class="nav_list d-flex align-items-start justify-content-between justify-content-md-center">
+                    <div class="category_nav_wrapper mx-auto py-3">
+                        <ul class="nav_list d-flex align-items-start justify-content-evenly justify-content-md-center w-100">
                             <li v-for="{ id, slug, name, is_new } in categoryData.subcategories" :key="id"
                                 class="nav_item d-flex flex-column align-items-center justify-content-center"
                                 @click="router.push({name: 'product', params: { productSlug: slug }})">
-                                <div class="icon">
+                                <div class="icon w-100 d-flex align-items-center justify-content-center">
                                     <img v-if="slug" :src="getIconCategory(slug)"
                                          :alt="name" class="category__icon"/>
                                 </div>
@@ -129,7 +129,7 @@ onMounted(() => {
                                     :to="{ name: 'productStore', params: { subcategorySlug: categoryData.slug }}">Shop
                         </RouterLink>
                     </div>
-                    <ul class="product__list d-flex flex-wrap gap-3 justify-content-evenly pb-3 px-2 px-md-4">
+                    <ul class="product__list d-flex flex-wrap gap-3 align-items-start justify-content-evenly pb-3 px-2 px-md-4">
                         <ProductCard v-for="( product, index ) in categoryData.all_products" :key="index" :product="product" :index="index"/>
                     </ul>
                 </footer>
@@ -166,13 +166,20 @@ onMounted(() => {
 
                 .nav_list
                     width: min(100%, 996px)
+
                     padding: 1rem
-                    gap: 3rem
+                    gap: 2rem
                     list-style: none
 
                     li
                         transition: all 0.4s ease
                         cursor: pointer
+                        .category__icon
+                            width: 3rem
+                            height: 3rem
+                            margin: 0 auto
+                            object-fit: contain !important
+                            object-position: bottom center
 
                         p
                             color: #000
@@ -187,12 +194,10 @@ onMounted(() => {
         header
             width: 90%
             padding: 2rem 0
-
             h1
                 margin-right: auto
                 font-size: 3rem
                 text-align: start !important
-
             p
                 margin-right: auto
                 max-width: 13rem
@@ -203,23 +208,18 @@ onMounted(() => {
             width: 90%
             overflow: hidden
             border-radius: 2rem
-
             .category__image
                 width: 100%
                 object-fit: cover !important
 
+
+
     @media (hover: hover)
 
         .category__block
-
             .category__nav_block
-
-
                 .category_nav_wrapper
-
-
                     .nav_list
-
                         li:hover
                             transform: scale(1.2)
 

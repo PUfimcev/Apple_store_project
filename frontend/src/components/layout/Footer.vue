@@ -7,12 +7,18 @@ const error = ref(null);
 const loading = ref(true);
 
 onMounted(async () => {
-
     const result = await getAllData('/api/categories');
     data.value = result.data;
     error.value = result.error;
     loading.value = result.loading;
 });
+
+const pageTop = () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
 </script>
 
 <template>
@@ -46,7 +52,7 @@ onMounted(async () => {
                                 <h6 class="mb-2 font-weight-bold">Shop and learn</h6>
                                 <ul class="nav d-flex flex-column">
                                     <li class="nav-item">
-                                        <RouterLink class="nav-link ps-0" aria-current="page" v-for="{ id, slug, name } in data" :key="id" :to="slug"> {{ name }}</RouterLink>
+                                        <RouterLink class="nav-link ps-0" aria-current="page" v-for="{ id, slug, name } in data" :key="id" :to="{name: 'category', params: { categorySlug: slug }}" @click="pageTop"> {{ name }}</RouterLink>
                                     </li>
                                 </ul>
                             </div>

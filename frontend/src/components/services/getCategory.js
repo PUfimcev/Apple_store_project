@@ -9,7 +9,6 @@ export const getCategory = async (endpoint, id, params = {}) => {
 
 
     try {
-
         const response = await fetchDataById(id, params)
         data = response.data
     } catch (err) {

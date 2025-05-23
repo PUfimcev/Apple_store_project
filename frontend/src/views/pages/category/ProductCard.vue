@@ -6,10 +6,10 @@ const props = defineProps({
         type: Object,
         required: true
     },
-    // index: {
-    //     type: Number,
-    //     required: true
-    // }
+    index: {
+        type: Number,
+        required: true
+    }
 })
 
 const {product, index} = toRefs(props)
@@ -24,7 +24,8 @@ const {product, index} = toRefs(props)
             <h6 v-if="product.name" class="product_title text-center w-100">{{ product.name }}</h6>
             <p v-if="product.description" class="product_description col-12  text-center text-wrap">
                 {{ product.description }}</p>
-            <div class="product_btn_price-group d-flex flex-column align-items-center justify-content-center  w-100">
+        </div>
+        <div class="product_btn_price-group d-flex flex-column align-items-center justify-content-center mt-auto w-100">
                 <div class="prices w-75">
                     <p v-if="product.discount_price" class="product_discount d-flex align-items-center justify-content-evenly m-0"><span class="text-danger">${{
                             product.discount_price
@@ -42,16 +43,15 @@ const {product, index} = toRefs(props)
                     </RouterLink>
                 </div>
             </div>
-        </div>
     </li>
 </template>
 
 <style scoped lang="sass">
 .product
     font-size: 0.8rem
-    max-height: 35rem
     border: 1px solid #f0f0f0
     border-radius: 0.5rem
+    height: 23rem
 
     img
         display: block
@@ -72,5 +72,5 @@ const {product, index} = toRefs(props)
 
 @media (min-width: 992px)
     .product
-        min-height: 13rem
+        height: 25rem
 </style>
