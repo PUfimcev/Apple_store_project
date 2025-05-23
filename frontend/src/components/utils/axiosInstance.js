@@ -12,13 +12,17 @@ axiosInstance.interceptors.request.use((config) => {
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
+
         return config;
     },
 );
 axiosInstance.interceptors.response.use(
-    response => response,
+    (response) => {
 
-    error => {
+        return response
+    },
+
+    (error) => {
 
         if (error.response?.status === 401) {
             localStorage.removeItem("authToken");

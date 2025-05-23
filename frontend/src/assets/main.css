@@ -16,5 +16,6 @@ a{
 }
 
 h1, ul{
+    padding: 0 !important;
     margin: 0 !important;
 }

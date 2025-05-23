@@ -5,9 +5,11 @@ export const getCategory = async (endpoint, id, params = {}) => {
     const { fetchDataById } = useRestAPIService(endpoint)
     let data = []
     let error = null
-    let loading
+    let loading = true
+
 
     try {
+
         const response = await fetchDataById(id, params)
         data = response.data
     } catch (err) {

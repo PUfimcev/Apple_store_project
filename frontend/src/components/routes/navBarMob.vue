@@ -83,6 +83,8 @@ const showCloseMobNav = (select) => {
     .container-fluid
         width: 100% !important
         margin: 0 !important
+        padding: 0 !important
+
         .logo
             background-image: url("../../assets/icons/apple_icons.svg")
             background-size: contain
