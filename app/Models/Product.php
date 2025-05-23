@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * @method static where(string $string, mixed $slug)
+ * @property mixed $slug
+ */
 class Product extends Model
 {
     use HasFactory, Notifiable, softDeletes;

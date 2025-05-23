@@ -59,7 +59,6 @@ const icons = {
 }
 
 const fetchCategoryData = async () => {
-    // categoryLoading.value = true
     const result = await getCategory(`/api`, categorySlug.value)
     categoryData.value = result.data[0]
     categoryError.value = result.error
@@ -72,7 +71,7 @@ watch(route,
     (newRoute) => {
         categorySlug.value = newRoute.params.categorySlug
         fetchCategoryData()
-})
+    })
 
 onMounted(() => {
     categorySlug.value = route.params.categorySlug
@@ -121,16 +120,21 @@ onMounted(() => {
                          :alt="categoryData.name" class="category__image"/>
                 </main>
                 <footer>
-                    <div class="category__footer_shop d-flex flex-column align-items-center justify-content-center py-5 px-3 px-md-0 text-center w-100">
+                    <div
+                        class="category__footer_shop d-flex flex-column align-items-center justify-content-center py-5 px-3 px-md-0 text-center w-100">
                         <h1 class="title">Discover the latest in {{ categoryData.name }}</h1>
                         <p class="description text-start fw-bold">Explore the latest products and accessories in
                             {{ categoryData.name }}. Find the perfect fit for your needs.</p>
                         <RouterLink class="btn btn-primary col-5 col-md-4 col-xl-3 btn-lg p-2" aria-current="page"
-                                    :to="{ name: 'productStore', params: { subcategorySlug: categoryData.slug }}">Shop
+                                    :to="{ name: 'store'}">Shop
                         </RouterLink>
+                        <!--                        <RouterLink class="btn btn-primary col-5 col-md-4 col-xl-3 btn-lg p-2" aria-current="page"-->
+                        <!--                                    :to="{ name: 'store', params: { subcategorySlug: categoryData.slug }}">Shop-->
+                        <!--                        </RouterLink>-->
                     </div>
                     <ul class="product__list d-flex flex-wrap gap-3 align-items-start justify-content-evenly pb-3 px-2 px-md-4">
-                        <ProductCard v-for="( product, index ) in categoryData.all_products" :key="index" :product="product" :index="index"/>
+                        <ProductCard v-for="( product, index ) in categoryData.all_products" :key="index"
+                                     :product="product" :index="index"/>
                     </ul>
                 </footer>
             </section>
@@ -174,6 +178,7 @@ onMounted(() => {
                     li
                         transition: all 0.4s ease
                         cursor: pointer
+
                         .category__icon
                             width: 3rem
                             height: 3rem
@@ -194,10 +199,12 @@ onMounted(() => {
         header
             width: 90%
             padding: 2rem 0
+
             h1
                 margin-right: auto
                 font-size: 3rem
                 text-align: start !important
+
             p
                 margin-right: auto
                 max-width: 13rem
@@ -208,10 +215,10 @@ onMounted(() => {
             width: 90%
             overflow: hidden
             border-radius: 2rem
+
             .category__image
                 width: 100%
                 object-fit: cover !important
-
 
 
     @media (hover: hover)

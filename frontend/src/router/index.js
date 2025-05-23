@@ -10,9 +10,9 @@ const routes = [
         component: () => import('../views/pages/product/ProductView.vue'),
     },
     {
-        path: '/store/:subcategorySlug',
-        name: 'productStore',
-        component: () => import('../views/pages/store/productStore/ProductStoreView.vue'),
+        // path: '/store/:subcategorySlug',
+        // name: 'productStore',
+        // component: () => import('../views/pages/store/productStore/ProductStoreView.vue'),
     },
     {
         path: '/:pathMatch(.*)*',

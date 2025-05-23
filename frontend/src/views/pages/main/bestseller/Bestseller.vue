@@ -33,8 +33,8 @@ const {bestseller, index} = toRefs(props);
                         }}</span> <span class="text-decoration-line-through">${{ bestseller.price}}</span></p>
                     <p v-else class="bestseller_price text-center m-0 w-100">${{ bestseller.price }}</p>
                 </div>
-                <RouterLink class="btn btn-outline-primary rounded-pill btn-sm mx-auto col-4 px-2 py-1" aria-current="page"
-                            :to="{ name: 'productStore', params: { subcategorySlug: bestseller.slug }}">Buy
+                <RouterLink class="btn btn-outline-secondary rounded-pill btn-sm mx-auto col-5 px-2 py-1" aria-current="page"
+                            :to="{ name: 'product', params: { productSlug: bestseller.slug }}">Learn more
                 </RouterLink>
             </div>
         </div>

@@ -32,15 +32,15 @@ const {product, index} = toRefs(props)
                         }}</span> <span class="text-decoration-line-through">${{ product.price}}</span></p>
                     <p v-else class="product_price text-center m-0 w-100">${{ product.price }}</p>
                 </div>
-                <div class="product__btn_group d-flex justify-content-evenly w-100 py-3">
+                <div class="product__btn_group d-flex justify-content-center w-100 py-3">
 
-                    <RouterLink class="btn btn-primary rounded-pill btn-sm mx-auto col-5 px-2 py-1" aria-current="page"
+                    <RouterLink class="btn btn-outline-secondary rounded-pill btn-sm mx-auto col-5 px-2 py-1" aria-current="page"
                                 :to="{ name: 'product', params: { productSlug: product.slug }}">Learn more
                     </RouterLink>
-                    <RouterLink class="btn btn-outline-primary rounded-pill btn-sm mx-auto col-5 px-2 py-1"
-                                aria-current="page"
-                                :to="{ name: 'productStore', params: { subcategorySlug: product.slug }}">Buy
-                    </RouterLink>
+<!--                    <RouterLink class="btn btn-outline-primary rounded-pill btn-sm mx-auto col-5 px-2 py-1"-->
+<!--                                aria-current="page"-->
+<!--                                :to="{ name: 'productStore', params: { subcategorySlug: product.slug }}">Buy-->
+<!--                    </RouterLink>-->
                 </div>
             </div>
     </li>
@@ -72,5 +72,5 @@ const {product, index} = toRefs(props)
 
 @media (min-width: 992px)
     .product
-        height: 25rem
+        height: 28rem
 </style>
