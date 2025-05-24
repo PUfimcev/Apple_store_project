@@ -1,15 +1,15 @@
 import {useRestAPIService} from "@/components/composables/useRestAPIService.js";
 
-export const getCategory = async (endpoint, id, params = {}) => {
+export const getDataBySlug = async (endpoint, slug, params = {}) => {
 
     const { fetchDataById } = useRestAPIService(endpoint)
     let data = []
     let error = null
-    let loading = true
+    let loading
 
 
     try {
-        const response = await fetchDataById(id, params)
+        const response = await fetchDataById(slug, params)
         data = response.data
     } catch (err) {
         error = err

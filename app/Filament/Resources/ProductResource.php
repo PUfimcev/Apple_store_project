@@ -124,12 +124,14 @@ class ProductResource extends Resource
                     ->prefix(''),
                 Forms\Components\TextInput::make('discount_price')
                     ->numeric(),
-                Forms\Components\FileUpload::make('Image')
+                Forms\Components\FileUpload::make('image_url')
                     ->image()
                     ->directory('products_images')
                     ->disk('public')
                     ->visibility('public')
-                    ->deleteUploadedFileUsing(fn ($state, $record) => $state ? Storage::disk('public')->delete('products_images/' . $state) : null)
+                    ->deleteUploadedFileUsing(fn ($state, $record) =>
+                    $state ? Storage::delete($state) : null
+                    )
                     ->panelLayout('grid')
                     ->reorderable(),
             ]);

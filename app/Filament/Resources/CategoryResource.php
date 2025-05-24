@@ -119,7 +119,7 @@ class CategoryResource extends Resource
                     ->directory('categories_images')
                     ->disk('public')
                     ->visibility('public')
-                    ->deleteUploadedFileUsing(fn ($state, $record) => $state ? Storage::disk('public')->delete('products_images/' . $state) : null),
+                    ->deleteUploadedFileUsing(fn ($state, $record) => $state ? Storage::disk('public')->delete( $state) : null),
             ]);
     }
 

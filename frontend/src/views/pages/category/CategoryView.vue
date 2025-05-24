@@ -1,9 +1,9 @@
 <script setup>
 import {useRoute, useRouter} from "vue-router"
 import {onMounted, ref, watch} from "vue"
-import {getCategory} from "@/components/services/getCategory.js";
-import Loading from "@/components/Loading.vue";
-import ErrorComponent from "@/components/ErrorComponent.vue";
+import {getDataBySlug} from "@/components/services/getDataBySlug.js"
+import Loading from "@/components/Loading.vue"
+import ErrorComponent from "@/components/ErrorComponent.vue"
 
 
 import MacbookAir from "@/assets/icons/macbook_air.svg"
@@ -59,7 +59,7 @@ const icons = {
 }
 
 const fetchCategoryData = async () => {
-    const result = await getCategory(`/api`, categorySlug.value)
+    const result = await getDataBySlug(`/api`, categorySlug.value)
     categoryData.value = result.data[0]
     categoryError.value = result.error
     categoryLoading.value = result.loading
@@ -99,7 +99,8 @@ onMounted(() => {
                         <ul class="nav_list d-flex align-items-start justify-content-evenly justify-content-md-center w-100">
                             <li v-for="{ id, slug, name, is_new } in categoryData.subcategories" :key="id"
                                 class="nav_item d-flex flex-column align-items-center justify-content-center"
-                                @click="router.push({name: 'product', params: { productSlug: slug }})">
+                                @click="">
+
                                 <div class="icon w-100 d-flex align-items-center justify-content-center">
                                     <img v-if="slug" :src="getIconCategory(slug)"
                                          :alt="name" class="category__icon"/>

@@ -33,7 +33,9 @@ class ProductVariantsRelationManager extends RelationManager
                     ->required()
                     ->maxLength(255)
                     ->live()
-                    ->afterStateUpdated(fn($state, callable $set) => $set('slug', $state ? Str::slug($state) : '')),
+                    ->afterStateUpdated(fn($state, callable $set, $get) =>
+                    $set('slug', $state && $get('sku') ? Str::slug($state . '-' . $get('sku')) : '')
+                    ),
                 Forms\Components\TextInput::make('slug')
                     ->unique(ignoreRecord: true)
                     ->label('Slug')
@@ -43,7 +45,9 @@ class ProductVariantsRelationManager extends RelationManager
                     ->label('SKU')
                     ->unique('product_variants', 'sku', ignoreRecord: true)
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->afterStateUpdated(fn($state, callable $set, $get) =>
+                    $set('slug', $get('name') && $state ? Str::slug($get('name') . '-' . $state) : '')),
                 Forms\Components\TextInput::make('price')
                     ->required()
                     ->numeric()
@@ -61,7 +65,7 @@ class ProductVariantsRelationManager extends RelationManager
                     ->maxLength(3000)
                     ->rows(6)
                     ->formatStateUsing(fn($state) => is_array($state) ? json_encode($state, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) : $state)
-                    ->dehydrateStateUsing(fn($state) => json_decode($state, true)),
+                    ->dehydrateStateUsing(fn($state) => is_string($state) ? $state : json_encode($state, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)),
             ]);
     }
 

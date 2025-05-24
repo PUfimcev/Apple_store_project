@@ -1,5 +1,6 @@
 <script setup>
-import {ref, toRefs} from "vue";
+import {ref, toRefs} from "vue"
+const baseURL = import.meta.env.VITE_API_BASE_URL
 
 const theme = ref({
     color: '#f0f0f0',
@@ -17,6 +18,13 @@ const props = defineProps({
 
 });
 
+const getImageProduct = (url) => {
+    if (url) {
+        return `${baseURL}/storage/${url}`
+    }
+    return ''
+}
+
 const {newProduct, index} = toRefs(props);
 
 </script>
@@ -33,7 +41,7 @@ const {newProduct, index} = toRefs(props);
 <!--                </RouterLink>-->
             </div>
 
-            <img v-if="newProduct.image_url" class="newProduct_img" :src="newProduct.image_url" :alt="`Product ${newProduct.name}`"/>
+            <img v-if="newProduct.image_url" class="newProduct_img" :src="getImageProduct(newProduct.image_url)" :alt="`Product ${newProduct.name}`"/>
 
         </div>
     </section>

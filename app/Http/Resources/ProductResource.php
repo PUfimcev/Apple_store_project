@@ -14,6 +14,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property mixed $slug
  * @property mixed $id
  * @property mixed $category_id
+ * @property mixed $category
+ * @property mixed $parentCategory
  */
 class ProductResource extends JsonResource
 {
@@ -26,7 +28,7 @@ class ProductResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'category_id' => $this->category_id,
+            'category_id' => $this->category ? $this->category->category->slug : null,
             'slug' => $this->slug,
             'name' => $this->name,
             'description' => $this->description,

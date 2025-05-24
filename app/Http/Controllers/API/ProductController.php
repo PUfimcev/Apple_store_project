@@ -58,9 +58,7 @@ class ProductController extends APIController
                 ->toArray();
 
             $bestSellerProducts = ProductVariant::whereIn('id', $bestSellerProductVariantIds)
-                ->with(['product' => function ($query) {
-                    $query->select('id', 'slug', 'name', 'description', 'price', 'discount_price', 'image_url');
-                }])
+                ->with(['product'])
                 ->get()
                 ->map
                 ->product;
@@ -76,7 +74,7 @@ class ProductController extends APIController
         }
     }
 
-    public function getProduct(Category $category,Product $product): JsonResponse
+    public function getProduct(Product $product): JsonResponse
     {
         try {
 

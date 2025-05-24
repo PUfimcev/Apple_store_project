@@ -20,7 +20,7 @@ Route::controller(CategoryController::class)->group(function () {
 Route::controller(ProductController::class)->group(function () {
     Route::get('/products/best-sellers', 'getBestSellers');
     Route::get('/products/new-arrivals', 'getNewProducts');
-    Route::get('/{category}/{product:slug}', 'getProduct')->scopeBindings();
+    Route::get('/products/{product:slug}', 'getProduct');
 });
 
 

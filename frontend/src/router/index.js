@@ -5,9 +5,10 @@ import navBarRoutes from "@/router/navBarRoutes.js";
 const routes = [
     ...navBarRoutes,
     {
-        path: '/:productSlug',
+        path: '/:categorySlug/:productSlug',
         name: 'product',
         component: () => import('../views/pages/product/ProductView.vue'),
+        props: true
     },
     {
         // path: '/store/:subcategorySlug',
