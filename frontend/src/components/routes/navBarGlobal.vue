@@ -9,11 +9,14 @@ import {
     BNavItem,
     BNavItemDropdown
 } from "bootstrap-vue-next";
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {getAllData} from "@/components/services/getAllData.js";
+import {useCartStore} from "@/stores/cartStore.js";
+import {storeToRefs} from "pinia";
 
 const isAuthorized = ref(false);
-
+const store = useCartStore()
+const { totalQuantity } = storeToRefs(store)
 const pageTop = () => {
     window.scrollTo({
         top: 0,
@@ -48,7 +51,7 @@ onMounted(async () => {
             </BNavItemDropdown>
 
             <BNavItem><BButton @click="" class="btn_searching"></BButton></BNavItem>
-            <BNavItem><BButton @click="" class="btn_cart"></BButton></BNavItem>
+            <BNavItem><BButton @click="" class="btn_cart"><span v-if="totalQuantity > 0" class="cart_quantity">{{totalQuantity}}</span></BButton></BNavItem>
         </BNavbarNav>
     </BNavbar>
 </template>
@@ -105,14 +108,32 @@ onMounted(async () => {
 
 
             .btn_cart
+                position: relative
                 background-image: url("../../assets/icons/icons8-cart.png")
                 background-color: transparent
                 background-size: contain
                 background-position: center
                 background-repeat: no-repeat
-                width: 1.25rem
-                height: 1.25rem
+                width: 1.4rem
+                height: 1.4rem
                 border: 0
+
+                .cart_quantity
+                    display: inline-block
+                    position: absolute
+                    top: -0.5rem
+                    right: -0.5rem
+                    background-color: #dc3545
+                    color: #fff
+                    border-radius: 50%
+                    width: 1.3rem
+                    height: 1.3rem
+                    padding: 0.2rem
+                    font-size: 0.7rem
+                    line-height: 0.8rem
+                    font-weight: bold
+                    text-align: center
+
 
 
 

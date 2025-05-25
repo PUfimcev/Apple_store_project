@@ -5,6 +5,7 @@ import {register} from "swiper/element/bundle"
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import {useCartStore} from "@/stores/cartStore.js";
 
 register()
 
@@ -22,6 +23,9 @@ const props = defineProps({
 })
 
 const {product, index} = toRefs(props)
+
+const store = useCartStore()
+const { addToCart } = store
 const getImageProduct = (url) => {
   if (url) {
     return `${baseURL}/storage/${url}`
@@ -39,10 +43,6 @@ const getProperties = computed(() => {
   }))
 })
 
-const addToCart = (id) => {
-  console.log(id)
-}
-
 const enableWindowSize = ref(true);
 
 watch(enableWindowSize, (newValue) => {
@@ -59,7 +59,6 @@ watch(enableWindowSize, (newValue) => {
 
 window.addEventListener("resize", () => {
   enableWindowSize.value = window.innerWidth < 992;
-  console.log(enableWindowSize.value)
 })
 onMounted(() => {
 
@@ -88,7 +87,6 @@ onMounted(() => {
         :lazy="true"
         :breakpoints="{ 768: { slidesPerView: 1 }}"
         style="--swiper-theme-color: #4c4d4f; --swiper-navigation-size: 2rem; --swiper-navigation-top-offset: 45%; --swiper-pagination-bullet-inactive-color: #4c4d4f; --swiper-pagination-bullet-inactive-opacity: 0.3; --swiper-pagination-bullet-size: 0.5rem; --swiper-pagination-bullet-horizontal-gap: 0.25rem; "
-
     >
       <swiper-slide v-if="product.image_url" v-for="(image, index) in product.image_url" :key="index">
 
