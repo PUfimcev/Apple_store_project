@@ -12,6 +12,7 @@ import {onMounted, ref} from "vue";
 import {getAllData} from "@/components/services/getAllData.js";
 import {useCartStore} from "@/stores/cartStore.js";
 import {storeToRefs} from "pinia";
+import {useRouter} from "vue-router";
 
 const isAuthorized = ref(false);
 const store = useCartStore()
@@ -28,6 +29,8 @@ const pageTop = () => {
         top: 0,
     });
 }
+const router = useRouter();
+
 const showCloseMobNav = (select) => {
 
     const mobNav = document.getElementById('mob_nav_routes');
@@ -46,12 +49,12 @@ const showCloseMobNav = (select) => {
 <template>
     <BNavbar class="mob_nav_bar py-0">
         <BNavbarBrand :to="{name: 'main'}" class="logo"></BNavbarBrand>
-        <BNavbarNav id="mob_nav_routes" class="mob_nav">
+        <BNavbarNav id="mob_nav_routes" class="mob_nav p-4">
             <BNavItem @click="showCloseMobNav(false)" style="width: 20px; height: 20px; font-size: 1.25rem;"
                       type="button" class="btn-close align-self-end p-2"
                       aria-label="Close"></BNavItem>
             <BNavItem to="/store" @click="pageTop"><h4 @click="showCloseMobNav(false)" class="m-0">Store</h4></BNavItem>
-            <BNavItem v-for="{ id, slug, name } in data" :key="id" :to="{name: 'category', params: { categorySlug: slug }}"><h4 @click="()=>{showCloseMobNav(false); pageTop(); }" class="m-0">{{ name }}</h4></BNavItem>
+            <BNavItem v-for="(item, key ) in data" :key="key" :to="{name: 'category', params: { categorySlug: item.slug }}"><h4 @click="()=>{showCloseMobNav(false); pageTop(); }" class="m-0">{{ item.name }}</h4></BNavItem>
         </BNavbarNav>
         <BNavbarNav class="btn_nav_group d-flex justify-content-center align-items-center ms-auto">
             <BNavItemDropdown right class="small-dropdown btn-sm" toggle-class="text-decoration-none" no-caret>
@@ -67,7 +70,7 @@ const showCloseMobNav = (select) => {
                 <BButton @click="" class="btn_searching"></BButton>
             </BNavItem>
             <BNavItem>
-                <BButton @click="" class="btn_cart"><span v-if="totalQuantity > 0" class="cart_quantity">{{totalQuantity}}</span></BButton>
+                <BButton @click="router.push({name: 'cart'})" class="btn_cart"><span v-if="totalQuantity > 0" class="cart_quantity">{{totalQuantity}}</span></BButton>
             </BNavItem>
             <BNavItem>
                 <div @click="showCloseMobNav(true)" class="burger_btn"><span></span><span></span></div>

@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import navBarRoutes from "@/router/navBarRoutes.js";
+import navBarRoutes from "@/router/navBarRoutes.js"
 
 const routes = [
     ...navBarRoutes,
@@ -11,9 +11,9 @@ const routes = [
         props: true
     },
     {
-        // path: '/store/:subcategorySlug',
-        // name: 'productStore',
-        // component: () => import('../views/pages/store/productStore/ProductStoreView.vue'),
+        path: '/cart',
+        name: 'cart',
+        component: () => import('../views/pages/cart/CartView.vue')
     },
     {
         path: '/:pathMatch(.*)*',

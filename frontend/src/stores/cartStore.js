@@ -13,10 +13,12 @@ export const useCartStore = defineStore('cart', () => {
         updateTotals()
     }
     const updateTotals = () => {
-        // totalQuantity.value = 5;
-
         totalQuantity.value = cart.value.length
         localStorage.setItem("totalQuantity", totalQuantity.value)
+    }
+
+    const isEmptyCart = () => {
+        return totalQuantity.value === 0
     }
     const removeCart = () => {
         cart.value = []
@@ -29,5 +31,5 @@ export const useCartStore = defineStore('cart', () => {
         updateTotals()
     }, { deep: true })
 
-    return { cart, totalQuantity, addToCart, removeFromCart, removeCart, updateTotals  }
+    return { cart, totalQuantity, addToCart, removeFromCart, removeCart, updateTotals, isEmptyCart   }
 })
