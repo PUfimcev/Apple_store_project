@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\API\{ CategoryController, ProductController};
+use App\Http\Controllers\API\{CartController, CategoryController, ProductController};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,4 +23,6 @@ Route::controller(ProductController::class)->group(function () {
     Route::get('/products/{product:slug}', 'getProduct');
 });
 
-
+Route::controller(CartController::class)->group(function () {
+    Route::post('/cart', 'getProductsInCart');
+});
