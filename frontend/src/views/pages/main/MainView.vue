@@ -50,14 +50,14 @@ onMounted(() => {
 
         <div class="bestsellers d-flex flex-column align-items-center justify-content-evenly w-100">
 
-            <h1 class="text-center">Bestsellers</h1>
+            <h1 class="text-center pb-3">Bestsellers</h1>
             <div v-if="bestsellersLoading">
                 <Loading/>
             </div>
             <div v-else-if="bestsellersError">
                 <ErrorComponent :error="bestsellersError"/>
             </div>
-            <ul v-else class="row  p-0 d-flex gap-2 gap-md-3 gap-lg-4 gap-xl-5 flex-wrap justify-content-center">
+            <ul v-else class="row  p-0 pb-3 d-flex gap-2 gap-md-3 gap-lg-4 gap-xl-5 flex-wrap justify-content-center">
                 <Bestseller v-for="(bestseller1, index) in bestsellersData" :bestseller="bestseller1"
                             :index="index" :key="index"/>
             </ul>

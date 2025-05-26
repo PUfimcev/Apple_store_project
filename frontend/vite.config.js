@@ -9,7 +9,13 @@ import {BootstrapVueNextResolver} from 'bootstrap-vue-next'
 
 export default defineConfig({
   plugins: [
-    vue(),
+    vue({
+        template: {
+            compilerOptions: {
+                isCustomElement: (tag) => tag.startsWith('swiper-'), // Игнорируем Swiper Web Components
+            },
+        },
+    }),
     vueDevTools(),
     Components({
       resolvers: [BootstrapVueNextResolver()],

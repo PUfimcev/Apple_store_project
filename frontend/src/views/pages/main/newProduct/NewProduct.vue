@@ -1,5 +1,6 @@
 <script setup>
-import {ref, toRefs} from "vue";
+import {ref, toRefs} from "vue"
+const baseURL = import.meta.env.VITE_API_BASE_URL
 
 const theme = ref({
     color: '#f0f0f0',
@@ -17,6 +18,13 @@ const props = defineProps({
 
 });
 
+const getImageProduct = (url) => {
+    if (url) {
+        return `${baseURL}/storage/${url}`
+    }
+    return ''
+}
+
 const {newProduct, index} = toRefs(props);
 
 </script>
@@ -27,13 +35,13 @@ const {newProduct, index} = toRefs(props);
             <h1 v-if="newProduct.name" class="newProduct_title">{{ newProduct.name }}</h1>
             <p v-if="newProduct.description" class="newProduct_description col-10  text-center text-wrap">{{ newProduct.description }}</p>
             <div class="newProduct_btn-group d-flex align-items-center justify-content-center w-100">
-                <RouterLink class="btn btn-primary col-5 col-md-4 col-xl-3 btn-lg p-2" aria-current="page" :to="{ name: 'product', params: { productSlug: newProduct.slug }}">Learn more</RouterLink>
-                <RouterLink class="btn btn-outline-primary  col-5 col-md-4 col-xl-3 btn-lg p-2" aria-current="page"
-                            :to="{ name: 'productStore', params: { subcategorySlug: newProduct.slug }}">Buy
-                </RouterLink>
+<!--                <RouterLink class="btn btn-outline-secondary col-5 col-md-4 col-xl-3 btn-lg p-2" aria-current="page" :to="{ name: 'product', params: { productSlug: newProduct.slug }}">Learn more</RouterLink>-->
+<!--                <RouterLink class="btn btn-outline-primary  col-5 col-md-4 col-xl-3 btn-lg p-2" aria-current="page"-->
+<!--                            :to="{ name: 'productStore', params: { subcategorySlug: newProduct.slug }}">Buy-->
+<!--                </RouterLink>-->
             </div>
 
-            <img v-if="newProduct.image_url" class="newProduct_img" :src="newProduct.image_url" :alt="`Product ${newProduct.name}`"/>
+            <img v-if="newProduct.image_url" class="newProduct_img" :src="getImageProduct(newProduct.image_url)" :alt="`Product ${newProduct.name}`"/>
 
         </div>
     </section>

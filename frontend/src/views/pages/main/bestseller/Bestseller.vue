@@ -1,6 +1,6 @@
 <script setup>
-
 import {toRefs} from "vue";
+const baseURL = import.meta.env.VITE_API_BASE_URL
 
 const props = defineProps({
     bestseller: {
@@ -14,13 +14,20 @@ const props = defineProps({
 
 });
 
+const getImageProduct = (url) => {
+    if (url) {
+        return `${baseURL}/storage/${url}`
+    }
+    return ''
+}
+
 const {bestseller, index} = toRefs(props);
 
 </script>
 <template>
     <li v-if="bestseller"
          :class="['bestseller', `index-${index}`, 'col-11', 'col-md-5', 'd-flex', 'align-items-center', 'justify-content-between', 'p-2']">
-        <img v-if="bestseller.image_url" class="bestseller_img" :src="bestseller.image_url"
+        <img v-if="bestseller.image_url" class="bestseller_img" :src="getImageProduct(bestseller.image_url)"
              :alt="`Product ${bestseller.name}`"/>
         <div class="bestsellers__container d-flex flex-column align-items-center justify-content-between px-2 h-100">
             <h6 v-if="bestseller.name" class="bestseller_title text-center w-100">{{ bestseller.name }}</h6>
@@ -33,8 +40,8 @@ const {bestseller, index} = toRefs(props);
                         }}</span> <span class="text-decoration-line-through">${{ bestseller.price}}</span></p>
                     <p v-else class="bestseller_price text-center m-0 w-100">${{ bestseller.price }}</p>
                 </div>
-                <RouterLink class="btn btn-outline-primary rounded-pill btn-sm mx-auto col-4 px-2 py-1" aria-current="page"
-                            :to="{ name: 'productStore', params: { subcategorySlug: bestseller.slug }}">Buy
+                <RouterLink class="btn btn-outline-secondary rounded-pill btn-sm mx-auto col-5 px-2 py-1" aria-current="page"
+                            :to="{ name: 'product', params: { categorySlug: bestseller.category_id, productSlug: bestseller.slug }}">Learn more
                 </RouterLink>
             </div>
         </div>

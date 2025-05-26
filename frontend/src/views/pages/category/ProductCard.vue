@@ -1,5 +1,6 @@
-<script setup lang="ts">
-import {toRefs} from "vue";
+<script setup>
+import {toRefs} from "vue"
+const baseURL = import.meta.env.VITE_API_BASE_URL
 
 const props = defineProps({
     product: {
@@ -12,13 +13,21 @@ const props = defineProps({
     }
 })
 
+const getImageProduct = (url) => {
+    if (url) {
+        return `${baseURL}/storage/${url}`
+    }
+    return ''
+}
+
 const {product, index} = toRefs(props)
+
 </script>
 
 <template>
     <li v-if="product"
         :class="['product', `index-${index}`, 'col-11', 'col-md-3', 'd-flex', 'flex-column', 'align-items-center', 'justify-content-start', 'p-2', 'mx-auto']">
-        <img v-if="product.image_url" class="product_img" :src="product.image_url"
+        <img v-if="product.image_url" class="product_img" :src="getImageProduct(product.image_url)"
              :alt="`Product ${product.name}`"/>
         <div class="products__container d-flex flex-column align-items-center justify-content-between pt-2">
             <h6 v-if="product.name" class="product_title text-center w-100">{{ product.name }}</h6>
@@ -32,15 +41,15 @@ const {product, index} = toRefs(props)
                         }}</span> <span class="text-decoration-line-through">${{ product.price}}</span></p>
                     <p v-else class="product_price text-center m-0 w-100">${{ product.price }}</p>
                 </div>
-                <div class="product__btn_group d-flex justify-content-evenly w-100 py-3">
+                <div class="product__btn_group d-flex justify-content-center w-100 py-3">
 
-                    <RouterLink class="btn btn-primary rounded-pill btn-sm mx-auto col-5 px-2 py-1" aria-current="page"
-                                :to="{ name: 'product', params: { productSlug: product.slug }}">Learn more
+                    <RouterLink class="btn btn-outline-secondary rounded-pill btn-sm mx-auto col-5 px-2 py-1" aria-current="page"
+                                :to="{ name: 'product', params: { categorySlug: product.category_id, productSlug: product.slug }}">Learn more
                     </RouterLink>
-                    <RouterLink class="btn btn-outline-primary rounded-pill btn-sm mx-auto col-5 px-2 py-1"
-                                aria-current="page"
-                                :to="{ name: 'productStore', params: { subcategorySlug: product.slug }}">Buy
-                    </RouterLink>
+<!--                    <RouterLink class="btn btn-outline-primary rounded-pill btn-sm mx-auto col-5 px-2 py-1"-->
+<!--                                aria-current="page"-->
+<!--                                :to="{ name: 'productStore', params: { subcategorySlug: product.slug }}">Buy-->
+<!--                    </RouterLink>-->
                 </div>
             </div>
     </li>
@@ -72,5 +81,5 @@ const {product, index} = toRefs(props)
 
 @media (min-width: 992px)
     .product
-        height: 25rem
+        height: 28rem
 </style>

@@ -6,18 +6,13 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @property mixed $image_url
- * @property mixed $discount_price
- * @property mixed $price
- * @property mixed $description
- * @property mixed $name
  * @property mixed $slug
- * @property mixed $id
- * @property mixed $category_id
- * @property mixed $category
- * @property mixed $parentCategory
+ * @property mixed $name
+ * @property mixed $description
+ * @property mixed $image_url
+ * @property mixed $productVariants
  */
-class ProductResource extends JsonResource
+class ProductCardResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -28,13 +23,11 @@ class ProductResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'category_id' => $this->category ? $this->category->category->slug : null,
             'slug' => $this->slug,
             'name' => $this->name,
             'description' => $this->description,
-            'price' => $this->price,
-            'discount_price' => $this->discount_price,
             'image_url' => $this->image_url,
+            'product_variants' => ProductVariantResource::collection($this->productVariants),
         ];
     }
 }
