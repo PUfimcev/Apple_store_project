@@ -9,11 +9,16 @@ import {
     BNavItem,
     BNavItemDropdown
 } from "bootstrap-vue-next";
-import {onMounted, ref} from "vue";
+import { onMounted, ref} from "vue";
 import {getAllData} from "@/components/services/getAllData.js";
+import {useCartStore} from "@/stores/cartStore.js";
+import {storeToRefs} from "pinia";
+import {useRouter} from "vue-router";
 
 const isAuthorized = ref(false);
-
+const store = useCartStore()
+const { totalQuantity } = storeToRefs(store)
+const router = useRouter()
 const pageTop = () => {
     window.scrollTo({
         top: 0,
@@ -35,7 +40,7 @@ onMounted(async () => {
         <BNavbarBrand :to="{name: 'main'}" class="logo"></BNavbarBrand>
         <BNavbarNav class="page_routes">
             <BNavItem to="/store" @click="pageTop">Store</BNavItem>
-            <BNavItem v-for="{ id, slug, name } in data" :key="id" :to="{name: 'category', params: { categorySlug: slug }}" @click="pageTop">{{ name }}</BNavItem>
+            <BNavItem v-for="(item, key ) in data" :key="key" :to="{name: 'category', params: { categorySlug: item.slug }}" @click="pageTop">{{ item.name }}</BNavItem>
         </BNavbarNav>
         <BNavbarNav class="btn_nav_group d-flex justify-content-end align-items-center">
             <BNavItemDropdown right class="small-dropdown btn-sm" toggle-class="text-decoration-none" no-caret>
@@ -48,7 +53,7 @@ onMounted(async () => {
             </BNavItemDropdown>
 
             <BNavItem><BButton @click="" class="btn_searching"></BButton></BNavItem>
-            <BNavItem><BButton @click="" class="btn_cart"></BButton></BNavItem>
+            <BNavItem><BButton @click="router.push({name: 'cart'})" class="btn_cart"><span v-if="totalQuantity > 0" class="cart_quantity">{{totalQuantity}}</span></BButton></BNavItem>
         </BNavbarNav>
     </BNavbar>
 </template>
@@ -105,14 +110,32 @@ onMounted(async () => {
 
 
             .btn_cart
+                position: relative
                 background-image: url("../../assets/icons/icons8-cart.png")
                 background-color: transparent
                 background-size: contain
                 background-position: center
                 background-repeat: no-repeat
-                width: 1.25rem
-                height: 1.25rem
+                width: 1.4rem
+                height: 1.4rem
                 border: 0
+
+                .cart_quantity
+                    display: inline-block
+                    position: absolute
+                    top: -0.5rem
+                    right: -0.5rem
+                    background-color: #dc3545
+                    color: #fff
+                    border-radius: 50%
+                    width: 1.3rem
+                    height: 1.3rem
+                    padding: 0.2rem
+                    font-size: 0.7rem
+                    line-height: 0.8rem
+                    font-weight: bold
+                    text-align: center
+
 
 
 

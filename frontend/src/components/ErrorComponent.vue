@@ -21,7 +21,7 @@ const back = () => {
 
 <template>
     <div class="error">
-        <h2 class="text-center">{{ error.status }} | {{error.message}}</h2>
+        <h2 class="text-center">{{error.message}}</h2>
         <p class="p-2 my-2">Oops. The error erose. Give you a shot to reload!</p>
         <button class="btn btn-outline-primary  col-5 col-md-4 col-xl-3 btn-lg p-2" @click="reload">Reload</button>
         <p class="p-2 my-2">Or go back!</p>
