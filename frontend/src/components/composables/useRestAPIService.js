@@ -9,6 +9,8 @@ export const useRestAPIService = (endpoint) => {
 
     const fetchDataById = async (id, params = {}) => axiosInstance.get(`${endpoint}/${id}`, params);
 
+    const fetchProducts = async (payload, params = {}) => axiosInstance.post(endpoint, payload, params);
+
     const createData = async (payload, params = {}) => axiosInstance.post(endpoint, payload, params);
 
     const updateData = async (id, payload, params = {}) => axiosInstance.put(`${endpoint}/${id}`, payload, params);
@@ -18,6 +20,7 @@ export const useRestAPIService = (endpoint) => {
     return {
         fetchAllData,
         fetchDataById,
+        fetchProducts,
         createData,
         updateData,
         deleteData

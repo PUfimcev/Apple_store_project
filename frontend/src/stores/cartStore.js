@@ -1,35 +1,74 @@
 import {ref, watch} from "vue";
 import {defineStore} from "pinia";
+import {fetchCartProductsByIds} from "@/components/services/fetchCartProductsByIds.js";
+
 export const useCartStore = defineStore('cart', () => {
-    const cart = ref(JSON.parse(localStorage.getItem('cart')) || [])
-    const totalQuantity = ref(localStorage.getItem("totalQuantity") || 0)
-    const addToCart = (productId) => {
-        if(cart.value.includes(productId)) return
+    const cart = ref([])
+    const totalQuantity = ref(0)
+    const productData = ref([])
+    const productError = ref(null)
+    const productLoading = ref(false)
+
+    const fetchProductData = async () => {
+
+        if (cart.value.length === 0) return
+        const payload = {
+            "product_ids": cart.value
+        }
+        const result = await fetchCartProductsByIds(`/api/cart`, payload)
+        productData.value = result.data
+        productError.value = result.error
+        productLoading.value = result.loading
+    }
+
+    const addToCart = async (productId) => {
+        if (cart.value.includes(productId)) return
         cart.value.push(productId)
-        updateTotals()
+        await updateTotals()
+        await fetchProductData()
     }
-    const removeFromCart = (productId) => {
+    const removeFromCart = async (productId) => {
         cart.value = cart.value.filter(item => item !== productId)
-        updateTotals()
+        await updateTotals()
+        await fetchProductData()
+        if( cart.value.length === 0) {
+            await removeCart()
+        }
     }
-    const updateTotals = () => {
+    const updateTotals = async () => {
         totalQuantity.value = cart.value.length
-        localStorage.setItem("totalQuantity", totalQuantity.value)
+        await fetchProductData()
     }
 
     const isEmptyCart = () => {
-        return totalQuantity.value === 0
+        return cart.value.length === 0
     }
-    const removeCart = () => {
+    const removeCart = async () => {
         cart.value = []
         totalQuantity.value = 0;
+        productData.value = []
         localStorage.removeItem('cart')
-        localStorage.removeItem("totalQuantity")
+        await fetchProductData()
     }
-    watch(cart, (newCart) => {
-        localStorage.setItem('cart', JSON.stringify(newCart))
-        updateTotals()
-    }, { deep: true })
+    watch(cart, async (newCart) => {
+        // localStorage.setItem('cart', JSON.stringify(newCart))
+        await updateTotals()
+        await fetchProductData()
+    }, {deep: true})
 
-    return { cart, totalQuantity, addToCart, removeFromCart, removeCart, updateTotals, isEmptyCart   }
+    return {
+        cart,
+        totalQuantity,
+        productData,
+        productError,
+        productLoading,
+        addToCart,
+        removeFromCart,
+        removeCart,
+        updateTotals,
+        isEmptyCart,
+        fetchProductData
+    }
+}, {
+    persist: true
 })

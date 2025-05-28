@@ -106,10 +106,10 @@ onMounted(() => {
       <div class="prices w-75">
         <p v-if="product.discount_price"
            class="product_discount d-flex align-items-center justify-content-evenly m-0"><span
-            class="text-danger">${{
+            class="text-danger">{{
             product.discount_price
-          }}</span> <span class="text-decoration-line-through">${{ product.price }}</span></p>
-        <p v-else class="product_price text-center m-0 w-100">${{ product.price }}</p>
+          }}</span> <span class="text-decoration-line-through">{{ product.price }}</span></p>
+        <p v-else class="product_price text-center m-0 w-100">{{ product.price }}</p>
       </div>
       <div class="product__btn_group d-flex justify-content-center w-100 pt-3">
 
