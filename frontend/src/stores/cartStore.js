@@ -8,13 +8,16 @@ export const useCartStore = defineStore('cart', () => {
     const productData = ref([])
     const productError = ref(null)
     const productLoading = ref(false)
+    const totalSumStore = ref(0)
 
     const fetchProductData = async () => {
 
         if (cart.value.length === 0) return
+
         const payload = {
-            "product_ids": cart.value
+            "product_ids": cart.value.map((item) => item.id),
         }
+
         const result = await fetchCartProductsByIds(`/api/cart`, payload)
         productData.value = result.data
         productError.value = result.error
@@ -22,16 +25,32 @@ export const useCartStore = defineStore('cart', () => {
     }
 
     const addToCart = async (productId) => {
-        if (cart.value.includes(productId)) return
-        cart.value.push(productId)
+        const existingProductId = cart.value.find(item => item.id === productId);
+
+        if (existingProductId) return
+
+        cart.value.push({
+            "id": productId,
+            "quantity": 1
+        })
         await updateTotals()
         await fetchProductData()
     }
+    const alterProductQuantity = (productId, quantity) => {
+
+        cart.value = cart.value.map(existingItem => {
+            if (existingItem.id === productId) {
+                return {...existingItem, quantity: quantity}
+            }
+            return existingItem
+        })
+    }
+
     const removeFromCart = async (productId) => {
-        cart.value = cart.value.filter(item => item !== productId)
+        cart.value = cart.value.filter(item => item.id !== productId)
         await updateTotals()
         await fetchProductData()
-        if( cart.value.length === 0) {
+        if (cart.value.length === 0) {
             await removeCart()
         }
     }
@@ -47,14 +66,14 @@ export const useCartStore = defineStore('cart', () => {
         cart.value = []
         totalQuantity.value = 0;
         productData.value = []
+        totalSumStore.value = 0
         localStorage.removeItem('cart')
-        await fetchProductData()
+        // await fetchProductData()
     }
-    watch(cart, async (newCart) => {
-        // localStorage.setItem('cart', JSON.stringify(newCart))
-        await updateTotals()
-        await fetchProductData()
-    }, {deep: true})
+
+    const setTotalSumStore = (sum) => {
+        totalSumStore.value = sum;
+    }
 
     return {
         cart,
@@ -62,7 +81,10 @@ export const useCartStore = defineStore('cart', () => {
         productData,
         productError,
         productLoading,
+        totalSumStore,
+        setTotalSumStore,
         addToCart,
+        alterProductQuantity,
         removeFromCart,
         removeCart,
         updateTotals,
