@@ -1,15 +1,22 @@
 <?php
 
-use App\Http\Controllers\API\{CartController, CategoryController, ProductController};
+use App\Http\Controllers\API\{Auth\AuthApiController, CartController, CategoryController, ProductController};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
 Route::middleware(['auth:api'])->group(function () {
-
-    Route::get('/user', function (Request $request) {
-        return $request->user();
+    Route::controller(AuthApiController::class)->group(function () {
+        Route::post('/logout', 'logout');
+        Route::get('/user', 'me');
     });
+
+});
+
+Route::controller(AuthApiController::class)->group(function () {
+    Route::post('/login', 'login');
+    Route::get('/register', 'register');
+    Route::post('/refresh', 'refresh');
 });
 
 Route::controller(CategoryController::class)->group(function () {

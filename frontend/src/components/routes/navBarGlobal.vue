@@ -11,20 +11,24 @@ import {
 } from "bootstrap-vue-next";
 import { onMounted, ref} from "vue";
 import {getAllData} from "@/components/services/getAllData.js";
-import {useCartStore} from "@/stores/cartStore.js";
 import {storeToRefs} from "pinia";
 import {useRouter} from "vue-router";
+import {useCartStore} from "@/stores/cartStore.js";
+import {useAuthStore} from "@/stores/authStore.js";
 
-const isAuthorized = ref(false);
-const store = useCartStore()
-const { totalQuantity } = storeToRefs(store)
+const authStore = useAuthStore()
+const {  logout, login } = authStore
+const { isLoggedIn } = storeToRefs(authStore)
+const cartStore = useCartStore()
+const { totalQuantity } = storeToRefs(cartStore)
 const router = useRouter()
 const pageTop = () => {
     window.scrollTo({
         top: 0,
     });
 }
-
+// const logout = () => { return isLoggedIn.value = false;  }
+// const login = () => { return isLoggedIn.value = true; };
 const data = ref([]);
 onMounted(async () => {
 
@@ -47,9 +51,9 @@ onMounted(async () => {
                 <template #button-content>
                     <i class="bi bi-person"></i>
                 </template>
-                <BDropdownItem v-if="isAuthorized" to="/profile">Profile</BDropdownItem>
-                <BDropdownItem v-if="isAuthorized" to="/login">Log out</BDropdownItem>
-                <BDropdownItem v-else to="/login">Log in</BDropdownItem>
+                <BDropdownItem v-if="isLoggedIn" to="">Profile</BDropdownItem>
+                <BDropdownItem v-if="isLoggedIn" @click="logout">Log out</BDropdownItem>
+                <BDropdownItem v-else  @click="login">Log in</BDropdownItem>
             </BNavItemDropdown>
 
             <BNavItem><BButton @click="" class="btn_searching"></BButton></BNavItem>

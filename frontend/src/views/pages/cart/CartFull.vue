@@ -3,6 +3,7 @@ import {onMounted, ref, watchEffect} from "vue"
 import {useCartStore} from "@/stores/cartStore.js";
 import Loading from "@/components/Loading.vue";
 import ErrorComponent from "@/components/ErrorComponent.vue";
+import {useRouter} from "vue-router";
 
 const productDataInCart = ref([]);
 const totalSum = ref(0)
@@ -18,6 +19,8 @@ const {
   productLoading,
   fetchProductData
 } = store
+const router = useRouter()
+
 
 onMounted(() => {
   if (cart.length !== 0) {
@@ -144,7 +147,7 @@ watchEffect(() => {
       <footer class="w-100 pb-5">
         <div class="footer_block d-flex align-items-center justify-content-between mx-auto">
           <p class="total_price m-0">Total: <span class="text-danger fw-bold">$ {{ totalSum }}</span></p>
-          <button class="btn btn-outline-secondary rounded-pill btn-sm mx-auto col-4 col-md-2  px-2 py-1">Checkout
+          <button @click="router.push({ name: 'checkout' })" class="btn btn-outline-secondary rounded-pill btn-sm mx-auto col-4 col-md-2  px-2 py-1">Checkout
           </button>
         </div>
       </footer>
