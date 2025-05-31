@@ -15,8 +15,9 @@ Route::middleware(['auth:api'])->group(function () {
 
 Route::controller(AuthApiController::class)->group(function () {
     Route::post('/login', 'login');
-    Route::get('/register', 'register');
+    Route::post('/register', 'register');
     Route::post('/refresh', 'refresh');
+    Route::post('/check-email', 'checkEmail');
 });
 
 Route::controller(CategoryController::class)->group(function () {
