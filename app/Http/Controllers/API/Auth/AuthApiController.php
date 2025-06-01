@@ -9,6 +9,7 @@ use App\Models\ApiUser;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -17,8 +18,6 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthApiController extends APIController
 {
-
-
     /**
      * @param Request $request
      * @return JsonResponse
@@ -30,6 +29,7 @@ class AuthApiController extends APIController
                 'name' => 'string|max:255',
                 'email' => 'required|string|email|unique:api_users,email',
                 'password' => 'required|string|min:8|confirmed',
+                'password_confirmation' => 'required|string|min:8',
             ]);
         } catch (ValidationException $e) {
             return $this->responseError(['errors' => $e->errors()], 422);
@@ -41,7 +41,6 @@ class AuthApiController extends APIController
             'password' => Hash::make($validated['password']),
         ]);
 
-//        $accessToken = JWTAuth::fromUser($user);
         $message = ['message' => 'Registered successfully'];
         return $this->responseSuccess([
             $message,
@@ -55,35 +54,41 @@ class AuthApiController extends APIController
     public function login(Request $request): JsonResponse
     {
 //        auth()->shouldUse('api');
+
+        $credentials = $request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required',
+        ]);
+
+        Cookie::forget('refresh_token');
         try {
-            $validated = $request->validate([
-                'email' => 'required|string|email',
-                'password' => 'required',
-            ]);
-        } catch (ValidationException $e) {
-            return $this->responseError(['errors' => $e->errors()], 422);
-        }
-
-        $credentials = ['email' => $validated['email'], 'password' => $validated['password']];
-
-        try{
             if (!$accessToken = JWTAuth::attempt($credentials)) {
                 return $this->responseError(['error' => 'Invalid credentials'], 401);
             }
 
             $user = auth()->user();
             $refreshToken = JWTAuth::fromUser($user);
+            $cookie = cookie('refresh_token', $refreshToken, 60 * 24 * 14, null, null, false, true);
 
         } catch (Exception $e) {
             logger($e->getMessage());
             return $this->responseError(['error' => 'Could not create token'], 500);
         }
 
+//        return $this->responseSuccess([
+//            'access_token' => $accessToken,
+//            'refresh_token' => $refreshToken,
+//            'user' => new UserApiShortResource($user)
+//        ], 200);
+
         return $this->responseSuccess([
             'access_token' => $accessToken,
             'refresh_token' => $refreshToken,
-            'user' => new UserApiShortResource($user)
-        ], 200);
+            'user' => new UserApiShortResource($user),
+            'message' => 'Logged in successfully'
+        ], 200)->cookie($cookie);
+
+
     }
 
     /**
@@ -91,34 +96,38 @@ class AuthApiController extends APIController
      */
     public function logout(): JsonResponse
     {
+//        dd(auth()->user());
         JWTAuth::invalidate(JWTAuth::getToken());
         $message = ['message' => 'Logged out successfully'];
-        return $this->responseSuccess($message, 200);
+        return $this->responseSuccess($message, 200)->cookie('refresh_token', '', -1, '/', null, false, true);
     }
 
     public function refresh(): JsonResponse
     {
-
-        $token = JWTAuth::getToken();
-        if (!$token) {
-            return $this->responseError(['error' => 'Token not provided'], 400);
-        }
-
         try {
-            $newToken = JWTAuth::refresh($token);
+            $refreshToken = request()->cookie('refresh_token');
+            if (!$refreshToken) {
+                return $this->responseError(['error' => 'Refresh token not provided'], 400);
+            }
+            $newToken = JWTAuth::setToken($refreshToken)->refresh();
+            $newRefreshToken = JWTAuth::setToken($newToken)->refresh();
+
+            return response()->json([
+                'access_token' => $newToken
+            ])->cookie('refresh_token', $newRefreshToken, 60 * 24 * 14, null, null, false, true);
+
         } catch (Exception $e) {
             logger($e->getMessage());
             return $this->responseError(['error' => 'Could not refresh token'], 500);
         }
 
-        return $this->responseSuccess(['access_token' => $newToken], 200);
     }
 
     public function me(): JsonResponse
     {
         try {
 
-            if(!$user = JWTAuth::parseToken()->authenticate()){
+            if (!$user = JWTAuth::parseToken()->authenticate()) {
                 return $this->responseError(['error' => 'User not found'], 404);
             }
 
@@ -140,15 +149,15 @@ class AuthApiController extends APIController
         $user = ApiUser::where('email', $email)->first();
 
         if ($user) {
-            return $this->responseError(['error' => 'Email is exist'], 200);
+            return $this->responseSuccess(['exists' => true], 200);
         }
 
         return $this->responseSuccess(['exists' => false], 200);
     }
 
-    public function getUsername($email): String
+    public function getUsername($email): string
     {
-       return strstr($email, '@', true);
+        return strstr($email, '@', true);
     }
 
 }

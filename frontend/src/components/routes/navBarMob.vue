@@ -8,15 +8,19 @@ import {
     BNavItem,
     BNavItemDropdown
 } from "bootstrap-vue-next";
-import {onMounted, ref} from "vue";
+import {onMounted, ref, toRefs} from "vue";
 import {getAllData} from "@/components/services/getAllData.js";
 import {useCartStore} from "@/stores/cartStore.js";
 import {storeToRefs} from "pinia";
 import {useRouter} from "vue-router";
+import {useAuthStore} from "@/stores/authStore.js";
 
-const isAuthorized = ref(false);
-const store = useCartStore()
-const { totalQuantity } = storeToRefs(store)
+const authStore = useAuthStore()
+const {  logout  } = authStore
+const {  userShortData } = toRefs(authStore)
+const { isLoggedIn } = storeToRefs(authStore)
+const cartStore = useCartStore()
+const { totalQuantity } = storeToRefs(cartStore)
 const data = ref([]);
 
 onMounted(async () => {
@@ -59,10 +63,11 @@ const showCloseMobNav = (select) => {
         <BNavbarNav class="btn_nav_group d-flex justify-content-center align-items-center ms-auto">
             <BNavItemDropdown right class="small-dropdown btn-sm" toggle-class="text-decoration-none" no-caret>
                 <template #button-content>
-                    <i class="bi bi-person"></i>
+                    <i v-if="Object.keys(userShortData).length !== 0" class="user_name">{{userShortData.user_name}}</i>
+                    <i v-else class="bi bi-person"></i>
                 </template>
-                <BDropdownItem v-if="isAuthorized" to="/user/profile">Profile</BDropdownItem>
-                <BDropdownItem v-if="isAuthorized" to="/logout">Log out</BDropdownItem>
+                <BDropdownItem v-if="isLoggedIn" to="/user">Profile</BDropdownItem>
+                <BDropdownItem v-if="isLoggedIn" @click="logout">Log out</BDropdownItem>
                 <BDropdownItem v-else to="/login">Log in</BDropdownItem>
             </BNavItemDropdown>
 
@@ -133,6 +138,9 @@ const showCloseMobNav = (select) => {
 
         .btn_nav_group
             .small-dropdown
+                .user_name
+                    font-size: 0.8rem
+                    padding: 0
                 .bi-person
                     font-size: 1.4rem
                     padding: 0

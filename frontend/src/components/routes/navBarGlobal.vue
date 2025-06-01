@@ -1,15 +1,7 @@
 <script setup>
 
-import {
-    BButton,
-    BDropdownItem,
-    BNavbar,
-    BNavbarBrand,
-    BNavbarNav,
-    BNavItem,
-    BNavItemDropdown
-} from "bootstrap-vue-next";
-import { onMounted, ref} from "vue";
+import {BButton, BDropdownItem, BNavbar, BNavbarBrand, BNavbarNav, BNavItem, BNavItemDropdown} from "bootstrap-vue-next";
+import {onMounted, ref, toRefs} from "vue";
 import {getAllData} from "@/components/services/getAllData.js";
 import {storeToRefs} from "pinia";
 import {useRouter} from "vue-router";
@@ -17,7 +9,8 @@ import {useCartStore} from "@/stores/cartStore.js";
 import {useAuthStore} from "@/stores/authStore.js";
 
 const authStore = useAuthStore()
-const {  logout, login } = authStore
+const {  logout  } = authStore
+const {  userShortData } = toRefs(authStore)
 const { isLoggedIn } = storeToRefs(authStore)
 const cartStore = useCartStore()
 const { totalQuantity } = storeToRefs(cartStore)
@@ -27,15 +20,13 @@ const pageTop = () => {
         top: 0,
     });
 }
-// const logout = () => { return isLoggedIn.value = false;  }
-// const login = () => { return isLoggedIn.value = true; };
+
 const data = ref([]);
 onMounted(async () => {
 
     const result = await getAllData('/api/categories');
     data.value = result.data;
 });
-
 
 </script>
 
@@ -49,11 +40,12 @@ onMounted(async () => {
         <BNavbarNav class="btn_nav_group d-flex justify-content-end align-items-center">
             <BNavItemDropdown right class="small-dropdown btn-sm" toggle-class="text-decoration-none" no-caret>
                 <template #button-content>
-                    <i class="bi bi-person"></i>
+                    <i v-if="Object.keys(userShortData).length > 0" class="user_name">{{userShortData.user_name}}</i>
+                    <i v-else class="bi bi-person"></i>
                 </template>
-                <BDropdownItem v-if="isLoggedIn" to="">Profile</BDropdownItem>
+                <BDropdownItem v-if="isLoggedIn" to="/user">Profile</BDropdownItem>
                 <BDropdownItem v-if="isLoggedIn" @click="logout">Log out</BDropdownItem>
-                <BDropdownItem v-else  @click="login">Log in</BDropdownItem>
+                <BDropdownItem v-else  @click="router.push({name: 'login'})">Log in</BDropdownItem>
             </BNavItemDropdown>
 
             <BNavItem><BButton @click="" class="btn_searching"></BButton></BNavItem>
@@ -96,10 +88,13 @@ onMounted(async () => {
             height: 100%
 
             .small-dropdown
-
+                .user_name
+                    font-size: 0.8rem
+                    padding: 0
                 .bi-person
                     font-size: 1.4rem
                     padding: 0
+
 
 
             .btn_searching

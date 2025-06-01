@@ -1,14 +1,13 @@
 <?php
 
 use App\Http\Controllers\API\{Auth\AuthApiController, CartController, CategoryController, ProductController};
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
 Route::middleware(['auth:api'])->group(function () {
     Route::controller(AuthApiController::class)->group(function () {
-        Route::post('/logout', 'logout');
         Route::get('/user', 'me');
+        Route::post('/logout', 'logout');
     });
 
 });
