@@ -6,7 +6,7 @@ import Loading from "@/components/Loading.vue";
 import {storeToRefs} from "pinia";
 
 const authStore = useAuthStore();
-const { userFullData} = authStore;
+const { userFullData, getUserFullData} = authStore;
 const {loading, error, isLoggedIn} = storeToRefs(authStore);
 const router = useRouter();
 
@@ -18,6 +18,7 @@ watch(isLoggedIn, async (newValue) => {
 
 onMounted(async () => {
     if (!isLoggedIn) router.push("/login")
+    await getUserFullData()
     user.value = userFullData;
 
 });

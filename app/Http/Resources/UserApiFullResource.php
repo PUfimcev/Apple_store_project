@@ -15,6 +15,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property mixed $last_name
  * @property mixed $first_name
  * @property mixed $email
+ * @property mixed $id
  */
 class UserApiFullResource extends JsonResource
 {
@@ -26,6 +27,7 @@ class UserApiFullResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'user_name' => $this->user_name,
             'email' => $this->email,
             'first_name' => $this->first_name,

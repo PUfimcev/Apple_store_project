@@ -1,8 +1,9 @@
-import {defineStore} from "pinia";
-import {ref} from "vue";
-import {getDataAfterLoginRegister} from "@/components/services/getDataAfterLoginRegist.js";
-import {useRestAPIService} from "@/components/composables/useRestAPIService.js";
-import {getAllData} from "@/components/services/getAllData.js";
+import {defineStore} from "pinia"
+import {ref} from "vue"
+import {getDataAfterLoginRegister} from "@/components/services/getDataAfterLoginRegist.js"
+import {useRestAPIService} from "@/components/composables/useRestAPIService.js"
+import {getAllData} from "@/components/services/getAllData.js"
+import {encryptData, decryptData} from "@/components/utils/encription.js"
 
 
 export const useAuthStore = defineStore('auth', () => {
@@ -15,9 +16,41 @@ export const useAuthStore = defineStore('auth', () => {
     const userFullData = ref({})
     const message = ref(null)
 
+    // Функция сохранения зашифрованных данных
+    // const persistState = () => {
+    //     const encryptedState = encryptData({
+    //         isLoggedIn: isLoggedIn.value,
+    //         prevRoute: prevRoute.value,
+    //         accessToken: accessToken.value,
+    //         error: error.value,
+    //         loading: loading.value,
+    //         userShortData: userShortData.value,
+    //         userFullData: userFullData.value,
+    //         message: message.value,
+    //     })
+    //     localStorage.setItem("auth", encryptedState)
+    // }
 
+    // const restoreState = () => {
+    //     const encryptedData = localStorage.getItem("auth");
+    //     if (encryptedData) {
+    //         const decryptedState = decryptData(encryptedData)
+    //         if (decryptedState) {
+    //             isLoggedIn.value = decryptedState.isLoggedIn
+    //             prevRoute.value = decryptedState.prevRoute
+    //             accessToken.value = decryptedState.accessToken
+    //             error.value = decryptedState.error
+    //             loading.value = decryptedState.loading
+    //             userShortData.value = decryptedState.userShortData
+    //             userFullData.value = decryptedState.userFullData
+    //             message.value = decryptedState.message
+    //         }
+    //     }
+    // }
+
+    // Вызываем `restoreState()` при запуске
+    // restoreState()
     const register = async (credentials) => {
-
         try {
             const resultRegist = await getDataAfterLoginRegister(`/api/register`, credentials)
             loading.value = resultRegist.loading ?? false
@@ -33,7 +66,6 @@ export const useAuthStore = defineStore('auth', () => {
     const login = async (credentials) => {
 
         const result = await getDataAfterLoginRegister(`/api/login`, credentials);
-
         userShortData.value = result.data
         error.value = result.error
         loading.value = result.loading ?? false;
@@ -43,6 +75,7 @@ export const useAuthStore = defineStore('auth', () => {
             userShortData.value = result.data.user;
             isLoggedIn.value = true;
             await getUserFullData()
+            // persistState()
             return true
         } else {
             error.value = 'No access token received';
@@ -53,7 +86,6 @@ export const useAuthStore = defineStore('auth', () => {
         const {createData} = useRestAPIService('/api/logout')
         try {
             const result = await createData({});
-
             userShortData.value = {}
             userFullData.value = {}
             accessToken.value = ''
@@ -64,20 +96,16 @@ export const useAuthStore = defineStore('auth', () => {
             console.error(err)
             error.value = err?.data?.error ?? 'Unexpected error';
         }
-
     }
-
     const getUserFullData = async () => {
 
         const result = await getAllData('/api/user')
         loading.value = result.loading
         error.value = result.error
         userFullData.value = result.data
-
     }
-
     const getRefreshToken = async () => {
-        const { createData } = useRestAPIService('/api/refresh');
+        const {createData} = useRestAPIService('/api/refresh');
 
         try {
             const result = await createData({});

@@ -4,7 +4,6 @@ import {useField, useForm} from "vee-validate";
 import {useAuthStore} from "@/stores/authStore.js";
 import {useRouter} from "vue-router";
 import Loading from "@/components/Loading.vue";
-import {toRefs} from "vue";
 import {storeToRefs} from "pinia";
 
 const authStore = useAuthStore();

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Database\Factories\ApiUserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -112,11 +113,15 @@ class ApiUser extends Authenticatable implements JWTSubject
         ];
     }
 
+    public function getDayOfBirthAttribute($value): string
+    {
+        return Carbon::parse($value)->format('d.m.Y');
+    }
     public function getJWTIdentifier() {
         return $this->getKey();
     }
 
-    public function getJWTCustomClaims()
+    public function getJWTCustomClaims(): array
     {
         return [];
     }
