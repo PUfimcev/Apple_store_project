@@ -32,7 +32,6 @@ watch(route, (newRoute) => {
 onMounted(() => {
   productSlug.value = route.params.productSlug
   fetchProductData()
-
 })
 
 
