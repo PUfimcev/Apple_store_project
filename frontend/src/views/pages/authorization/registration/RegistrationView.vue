@@ -87,7 +87,7 @@ const onInputClearError = (event, fieldName) => {
                        autocomplete="on" @blur="nameBlur" @focus="onFocusClearError('name')"
                        @input="(event) => onInputClearError( event,'name')"/>
                 <div class="errors">
-                    <span v-if="nameError" class="text-danger small">{{ nameError }}</span>
+                    <span v-if="nameError" class="text-danger small">{{ (nameError[0]).toUpperCase()+(nameError).slice(1)  }}</span>
                 </div>
             </div>
             <div class="mb-3">
@@ -96,7 +96,7 @@ const onInputClearError = (event, fieldName) => {
                        autocomplete="on" @blur="emailBlur" @focus="onFocusClearError('email')"
                        @input="(event) => onInputClearError( event,'email')"/>
                 <div class="errors">
-                    <span v-if="emailError" class="text-danger small">{{ emailError }}</span>
+                    <span v-if="emailError" class="text-danger small">{{  (emailError[0]).toUpperCase()+(emailError).slice(1) }}</span>
                 </div>
             </div>
 
@@ -107,7 +107,7 @@ const onInputClearError = (event, fieldName) => {
                        autocomplete="off" @blur="passwordBlur" @focus="onFocusClearError('password')"
                        @input="(event) => onInputClearError( event, 'password')"/>
                 <div class="errors">
-                    <span v-if="passwordError" class="text-danger small">{{ passwordError }}</span>
+                    <span v-if="passwordError" class="text-danger small">{{ (passwordError[0]).toUpperCase()+(passwordError).slice(1) }}</span>
                 </div>
             </div>
 
@@ -118,7 +118,7 @@ const onInputClearError = (event, fieldName) => {
                        autocomplete="off" @blur="confirmPasswordBlur" @focus="onFocusClearError('confirmPassword')"
                        @input="(event) => onInputClearError( event,  'confirmPassword')"/>
                 <div class="errors">
-                    <span v-if="confirmPasswordError" class="text-danger small">{{ confirmPasswordError }}</span>
+                    <span v-if="confirmPasswordError" class="text-danger small">{{  (confirmPasswordError[0]).toUpperCase()+(confirmPasswordError).slice(1)}}</span>
                 </div>
             </div>
 

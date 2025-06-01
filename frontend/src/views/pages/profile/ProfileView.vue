@@ -1,39 +1,25 @@
 <script setup>
 import {ref, onMounted, watchEffect, watch} from "vue";
-import { useAuthStore } from "@/stores/authStore.js";
-import { useRouter } from "vue-router";
+import {useAuthStore} from "@/stores/authStore.js";
+import {useRouter} from "vue-router";
 import Loading from "@/components/Loading.vue";
 import {storeToRefs} from "pinia";
 
 const authStore = useAuthStore();
-const { userFullData, isLoggedIn, updateProfile, getUserFullData, } = authStore;
-const { loading, error  } = storeToRefs(authStore);
+const { userFullData} = authStore;
+const {loading, error, isLoggedIn} = storeToRefs(authStore);
 const router = useRouter();
 
-const user = ref({
-    user_name: "",
-    email: "",
-    first_name: "",
-    last_name: "",
-    profile_picture: "",
-    day_of_birth: "",
-    phone_number: "",
-    address: "",
-    city: ""
-});
+const user = ref({});
 
-watch(isLoggedIn, (newValue) => {
-    if (!newValue) router.push("/login");
+watch(isLoggedIn, async (newValue) => {
+    if (!newValue) router.push("/login")
 })
 
 onMounted(async () => {
-    if (!isLoggedIn) {
-        router.push("/login");
-    } else {
-        await getUserFullData()
-        console.log(userFullData);
-        user.value = userFullData;
-    }
+    if (!isLoggedIn) router.push("/login")
+    user.value = userFullData;
+
 });
 
 </script>
@@ -41,23 +27,26 @@ onMounted(async () => {
 <template>
     <section class="profile_wrapper">
         <div v-if="loading">
-            <Loading />
+            <Loading/>
         </div>
-        <div v-else-if="error" class="error-message text-center py-5 d-flex justify-content-center align-items-center flex-column">
+        <div v-else-if="error"
+             class="error-message text-center py-5 d-flex justify-content-center align-items-center flex-column">
             <p>{{ error.message }}</p>
         </div>
 
-        <div v-if="user" class="profile-container">
+        <div v-else class="profile-container py-5">
 
             <h3>User Profile</h3>
-
-            <div class="avatar-wrapper" v-if="user.profile_picture">
+            <div v-if="user.profile_picture" class="avatar-wrapper">
                 <img :src="user.profile_picture" alt="User Avatar" class="avatar">
+            </div>
+            <div v-else class="avatar-wrapper">
+                <i class="bi bi-person-circle avatar"></i>
             </div>
 
             <div class="profile-details">
-                <p><strong>Username:</strong> {{ user.user_name }}</p>
-                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>Username:</strong> {{ user.user_name || "Not provided" }}</p>
+                <p><strong>Email:</strong> {{ user.email || "Not provided" }}</p>
                 <p><strong>First Name:</strong> {{ user.first_name || "Not provided" }}</p>
                 <p><strong>Last Name:</strong> {{ user.last_name || "Not provided" }}</p>
                 <p><strong>Date of Birth:</strong> {{ user.day_of_birth || "Not provided" }}</p>
@@ -84,6 +73,7 @@ onMounted(async () => {
         margin-bottom: 15px
 
         .avatar
+            font-size: 3rem
             width: 100px
             height: 100px
             border-radius: 50%

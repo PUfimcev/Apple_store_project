@@ -26,21 +26,24 @@ axiosInstance.interceptors.response.use(
 
     async (error) => {
         const authStore = useAuthStore();
-        if (error.response?.status === 401) {
+        const originalRequest = error.config;
+
+        if (error.response?.status === 401 && !originalRequest._retry) {
+            originalRequest._retry = true;
+
             try {
-                // Attempt to refresh the token
-                await authStore.getRefreshToken()
-                // Retry the original request with the new token
-                const token = authStore.accessToken
+                await authStore.getRefreshToken();
+                const token = authStore.accessToken;
                 if (token) {
-                    error.config.headers.Authorization = `Bearer ${token}`
-                    return axiosInstance.request(error.config)
+                    originalRequest.headers.Authorization = `Bearer ${token}`;
+                    return axiosInstance.request(originalRequest);
                 }
-            } catch (error) {
-                await authStore.logout()
+            } catch (err) {
+                await authStore.logout();
             }
         }
-        throw error
+
+        throw error;
     }
 );
 export default axiosInstance

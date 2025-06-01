@@ -5,9 +5,11 @@ import {useAuthStore} from "@/stores/authStore.js";
 import {useRouter} from "vue-router";
 import Loading from "@/components/Loading.vue";
 import {toRefs} from "vue";
+import {storeToRefs} from "pinia";
 
 const authStore = useAuthStore();
-const {login, error, loading, prevRoute} = authStore;
+const {login, prevRoute} = authStore;
+const {loading, error } = storeToRefs(authStore);
 const router = useRouter();
 const validationSchema = yup.object({
   email: yup.string().email('Invalid email address').required('Email is required').matches(/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/, 'Invalid email address'),
@@ -37,8 +39,7 @@ const onSubmit = handleSubmit(async (values) => {
     resetForm();
     router.push(prevRoute);
   } else {
-    console.error("Login failed, showing error:", error.value);
-    setErrors({ email: error.value ?? "Invalid email or password" });
+    setErrors({ email: error.message ?? "Invalid email or password" });
   }
 });
 
@@ -66,7 +67,7 @@ const onInputClearError = (event, fieldName) => {
                autocomplete="on" @blur="emailBlur" @focus="onFocusClearError('email')"
                @input="(event) => onInputClearError(event, 'email')"/>
         <div class="errors">
-          <span v-if="emailError" class="email text-danger small">{{ emailError }}</span>
+          <span v-if="emailError" class="email text-danger small">{{ (emailError[0]).toUpperCase()+(emailError).slice(1) }}</span>
         </div>
 
       </div>
@@ -77,7 +78,7 @@ const onInputClearError = (event, fieldName) => {
                autocomplete="on" @blur="passwordBlur" @focus="onFocusClearError('password')"
                @input="(event) => onInputClearError(event, 'password')"/>
         <div class="errors">
-          <span v-if="passwordError" class="password text-danger small">{{ passwordError }}</span>
+          <span v-if="passwordError" class="password text-danger small">{{  (passwordError[0]).toUpperCase()+(passwordError).slice(1)  }}</span>
 
         </div>
       </div>

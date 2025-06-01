@@ -42,6 +42,7 @@ export const useAuthStore = defineStore('auth', () => {
             accessToken.value = result.data.access_token;
             userShortData.value = result.data.user;
             isLoggedIn.value = true;
+            await getUserFullData()
             return true
         } else {
             error.value = 'No access token received';
@@ -49,7 +50,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
     const logout = async () => {
 
-        const {createData} = useRestAPIService('/logout')
+        const {createData} = useRestAPIService('/api/logout')
         try {
             const result = await createData({});
 
@@ -58,7 +59,7 @@ export const useAuthStore = defineStore('auth', () => {
             accessToken.value = ''
             isLoggedIn.value = false;
             localStorage.removeItem('auth')
-            message.value = result.data.message;
+            message.value = result.data[0].message;
         } catch (err) {
             console.error(err)
             error.value = err?.data?.error ?? 'Unexpected error';
@@ -68,23 +69,26 @@ export const useAuthStore = defineStore('auth', () => {
 
     const getUserFullData = async () => {
 
-        const result = await getAllData('/user')
-
-        userFullData.value = result.data
-        error.value = result.error
+        const result = await getAllData('/api/user')
         loading.value = result.loading
+        error.value = result.error
+        userFullData.value = result.data
+
     }
 
     const getRefreshToken = async () => {
-        const {createData} = useRestAPIService('/refresh')
-        try {
-            const result = await createData({})
+        const { createData } = useRestAPIService('/api/refresh');
 
-            accessToken.value = result.data.access_token
+        try {
+            const result = await createData({});
+            accessToken.value = result.data.access_token;
         } catch (err) {
-            error.value = err?.data?.error ?? 'Unexpected error'
-            await logout()
-            window.location.href = "/login"
+            error.value = err?.data?.error ?? 'Unexpected error';
+
+            if (err.response?.status === 401) {
+                await logout();
+                window.location.href = "/login";
+            }
         }
     }
 
@@ -109,6 +113,7 @@ export const useAuthStore = defineStore('auth', () => {
         error,
         loading,
         userShortData,
+        userFullData,
         message,
         register,
         login,

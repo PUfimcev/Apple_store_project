@@ -60,7 +60,6 @@ class AuthApiController extends APIController
             'password' => 'required',
         ]);
 
-        Cookie::forget('refresh_token');
         try {
             if (!$accessToken = JWTAuth::attempt($credentials)) {
                 return $this->responseError(['error' => 'Invalid credentials'], 401);
@@ -75,20 +74,12 @@ class AuthApiController extends APIController
             return $this->responseError(['error' => 'Could not create token'], 500);
         }
 
-//        return $this->responseSuccess([
-//            'access_token' => $accessToken,
-//            'refresh_token' => $refreshToken,
-//            'user' => new UserApiShortResource($user)
-//        ], 200);
-
         return $this->responseSuccess([
             'access_token' => $accessToken,
-            'refresh_token' => $refreshToken,
+//            'refresh_token' => $refreshToken,
             'user' => new UserApiShortResource($user),
             'message' => 'Logged in successfully'
         ], 200)->cookie($cookie);
-
-
     }
 
     /**
@@ -96,7 +87,6 @@ class AuthApiController extends APIController
      */
     public function logout(): JsonResponse
     {
-//        dd(auth()->user());
         JWTAuth::invalidate(JWTAuth::getToken());
         $message = ['message' => 'Logged out successfully'];
         return $this->responseSuccess($message, 200)->cookie('refresh_token', '', -1, '/', null, false, true);
@@ -109,8 +99,12 @@ class AuthApiController extends APIController
             if (!$refreshToken) {
                 return $this->responseError(['error' => 'Refresh token not provided'], 400);
             }
+
+            // Генерируем новый access_token без изменения refresh_token
             $newToken = JWTAuth::setToken($refreshToken)->refresh();
-            $newRefreshToken = JWTAuth::setToken($newToken)->refresh();
+
+            // Теперь обновляем refresh_token на основе старого refresh_token
+            $newRefreshToken = JWTAuth::setToken($refreshToken)->refresh();
 
             return response()->json([
                 'access_token' => $newToken
@@ -120,8 +114,8 @@ class AuthApiController extends APIController
             logger($e->getMessage());
             return $this->responseError(['error' => 'Could not refresh token'], 500);
         }
-
     }
+
 
     public function me(): JsonResponse
     {
