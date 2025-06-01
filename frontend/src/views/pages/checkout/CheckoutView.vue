@@ -1,18 +1,20 @@
 <script setup>
 import {useRouter} from "vue-router";
-import {ref, watch} from "vue";
+import { watch} from "vue";
 import {useAuthStore} from "@/stores/authStore.js";
-import {storeToRefs} from "pinia";
 import {useCartStore} from "@/stores/cartStore.js";
 import * as yup from "yup";
 import {useField, useForm} from "vee-validate";
+import Loading from "@/components/Loading.vue";
+import ErrorComponent from "@/components/ErrorComponent.vue";
 
 const router = useRouter()
 const authStore = useAuthStore()
-const {isLoggedIn, userFullData} = storeToRefs(authStore)
+const {isLoggedIn, userFullData} = authStore
 
 const cartStore = useCartStore()
-const {cart, productData, totalSumStore} = storeToRefs(cartStore)
+const {handleCheckout, cart, productData, totalSumStore, productError, productLoading } = cartStore
+
 
 const validationSchema = yup.object({
   payment_method: yup.string().required('Payment method is required'),
@@ -28,24 +30,26 @@ const {
   validateOnBlur: true,
 })
 
-const onSubmit = handleSubmit(async (values) => {
+const onSubmit = handleSubmit( async (values) => {
 
   const orderData = {
     ...values,
-    api_user_id: userFullData.value.id,
-    phone: userFullData.value.phone_number,
-    address: userFullData.value.address || '',
-    city: userFullData.value.city || '',
-    total_amount: totalSumStore.value,
-    products: cart.value.map(item => {
-      let product = productData.value.find(p => p.id === item.id)
+    api_user_id: userFullData.id,
+    phone: userFullData.phone_number,
+    address: userFullData.address || '',
+    city: userFullData.city || '',
+    total_amount: totalSumStore,
+    products: cart.map(item => {
+      let product = productData.find(p => p.id === item.id)
       const price = product.discounted_price || product.price
       return {product_variant_id: item.id, quantity: item.quantity, price: price}
     }),
     status: 'pending'
   }
 
-  console.log(orderData)
+  const result = await handleCheckout(orderData)
+
+  if (result) await router.push("/")
 })
 
 watch(isLoggedIn, (newValue) => {
@@ -56,53 +60,63 @@ watch(isLoggedIn, (newValue) => {
 </script>
 
 <template>
-  <div class="checkout-wrapper d-flex flex-column justify-content-center align-items-center">
-    <router-link :to="{name: 'cart'}" class="btn btn-outline-secondary rounded-pill w-10 mx-auto mb-2">Back to Cart</router-link>
-    <div class="checkout_box">
+  <div class="checkout-wrapper ">
+    <div v-if="productLoading">
+      <Loading/>
+    </div>
+    <div v-else-if="productError"
+         class="error_block d-flex align-items-center justify-content-center px-3 w-100">
+      <ErrorComponent :error="productError"/>
+    </div>
+    <div v-else class="checkout_container d-flex flex-column justify-content-center align-items-end">
+      <router-link :to="{name: 'cart'}" class="btn btn-outline-secondary rounded-pill w-10 mb-2">Back to Cart</router-link>
+      <div class="checkout_box">
 
-      <h2>Checkout</h2>
+        <h2>Checkout</h2>
 
-      <div class="summary">
-        <p><strong>Total Amount:</strong> <span>${{ totalSumStore }}</span></p>
-        <p><strong>Name:</strong> <span>{{ userFullData.user_name }}</span></p>
-        <p><strong>Phone:</strong> <span>{{ userFullData.phone_number }}</span></p>
-        <p><strong>Shipping Address:</strong> <span>{{ userFullData.address }}, {{ userFullData.city }}</span></p>
+        <div class="summary">
+          <p><strong>Total Amount:</strong> <span>${{ totalSumStore }}</span></p>
+          <p><strong>Name:</strong> <span>{{ userFullData.user_name }}</span></p>
+          <p><strong>Phone:</strong> <span>{{ userFullData.phone_number }}</span></p>
+          <p><strong>Shipping Address:</strong> <span>{{ userFullData.address }}, {{ userFullData.city }}</span></p>
+        </div>
+
+        <ul class="cart-items w-100">
+          <li v-for="(item, index) in productData" :key="index" class="cart-item w-100">
+            <div class="cart-content w-100">
+              <img :src="item.image_url[0].url" v-if="item.image_url" loading="lazy" alt="Product Image"/>
+              <p class="product-name text-center">{{ item.name }}</p>
+              <div class="quantity-box">
+              <span class="quantity" v-for="(cartItem, index) in cart" :key="index" v-show="cartItem.id === item.id">
+                {{ cartItem.quantity }}
+              </span>
+              </div>
+              <div class="price">
+                <p v-if="item.discount_price" class="discount">${{ item.discount_price }}/pc</p>
+                <p v-else class="discount">${{ item.price }}/pc</p>
+              </div>
+            </div>
+          </li>
+        </ul>
+
+        <form @submit.prevent="onSubmit" class="payment-form">
+          <fieldset>
+            <legend>Payment Method</legend>
+            <label class="radio-label">
+              <input type="radio" v-model="paymentMethod" value="cash" @blur="paymentMethodBlur" />
+              <span>Cash</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" v-model="paymentMethod" value="card" @blur="paymentMethodBlur"/>
+              <span>Card</span>
+            </label>
+            <p v-if="paymentMethodError" class="error color-danger-500">{{ paymentMethodError }}</p>
+          </fieldset>
+
+          <button type="submit" class="checkout-button">Place Order</button>
+        </form>
       </div>
 
-      <ul class="cart-items">
-        <li v-for="(item, index) in productData" :key="index" class="cart-item">
-          <div class="cart-content">
-            <img :src="item.image_url[0].url" v-if="item.image_url" loading="lazy" alt="Product Image"/>
-            <p class="product-name">{{ item.name }}</p>
-            <div class="quantity-box">
-            <span class="quantity" v-for="(cartItem, index) in cart" :key="index" v-show="cartItem.id === item.id">
-              {{ cartItem.quantity }}
-            </span>
-            </div>
-            <div class="price">
-              <p v-if="item.discount_price" class="discount">${{ item.discount_price }}/pc</p>
-              <p v-else>${{ item.price }}/pc</p>
-            </div>
-          </div>
-        </li>
-      </ul>
-
-      <form @submit.prevent="onSubmit" class="payment-form">
-        <fieldset>
-          <legend>Payment Method</legend>
-          <label class="radio-label">
-            <input type="radio" v-model="paymentMethod" value="cash" @blur="paymentMethodBlur" />
-            <span>Cash</span>
-          </label>
-          <label class="radio-label">
-            <input type="radio" v-model="paymentMethod" value="card" @blur="paymentMethodBlur"/>
-            <span>Card</span>
-          </label>
-          <p v-if="paymentMethodError" class="error color-danger-500">{{ paymentMethodError }}</p>
-        </fieldset>
-
-        <button type="submit" class="checkout-button">Place Order</button>
-      </form>
     </div>
   </div>
 </template>
@@ -152,6 +166,7 @@ watch(isLoggedIn, (newValue) => {
       .cart-content
         display: flex
         align-items: center
+        justify-content: space-between
         gap: 15px
 
         img
@@ -162,15 +177,19 @@ watch(isLoggedIn, (newValue) => {
 
         .product-name
           font-weight: bold
+          margin: 0
 
         .quantity-box
           background: #f0f0f0
           padding: 5px 10px
+          margin: 0
           border-radius: 5px
 
 
         .price
           text-align: right
+          .discount
+            margin: 0
 
         .discount
           color: red

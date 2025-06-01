@@ -32,4 +32,5 @@ Route::controller(ProductController::class)->group(function () {
 
 Route::controller(CartController::class)->group(function () {
     Route::post('/cart', 'getProductsInCart');
+    Route::post('/order/confirmed', 'confirmOrder');
 });
