@@ -47,7 +47,6 @@ return [
         'api' => [
             'driver' => 'jwt',
             'provider' => 'api_users',
-            'hash' => false,
         ],
     ],
 
@@ -108,6 +107,12 @@ return [
         'users' => [
             'provider' => 'users',
             'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'api_users' => [
+            'provider' => 'api_users',
+            'table' => env('AUTH_API_PASSWORD_RESET_TOKEN_TABLE', 'api_users'),
             'expire' => 60,
             'throttle' => 60,
         ],

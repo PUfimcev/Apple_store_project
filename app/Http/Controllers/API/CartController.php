@@ -8,7 +8,7 @@ use App\Models\ProductVariant;
 use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Http\JsonResponse;
-use function PHPUnit\Framework\isArray;
+
 
 class CartController extends APIController
 {
@@ -35,5 +35,20 @@ class CartController extends APIController
         }
     }
 
+    public function confirmOrder(Request $request): JsonResponse
+    {
+        $orderData = $request->all();
 
+        dd($orderData);
+        // Here you would typically handle the order confirmation logic, such as saving the order to the database.
+        // For now, we will just return a success response with the order data.
+
+        try {
+            // Validate and process the order data here
+            return $this->responseSuccess(['message' => 'Order confirmed successfully'], 200);
+        } catch (Exception $e) {
+            logger($e->getMessage());
+            return $this->responseError('Failed to confirm order', 500);
+        }
+    }
 }

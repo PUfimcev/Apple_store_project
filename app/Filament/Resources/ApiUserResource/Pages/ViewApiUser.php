@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ApiUserResource\Pages;
 
 use App\Filament\Resources\ApiUserResource;
+use App\Models\ApiUser;
 use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\ViewRecord;
@@ -49,4 +50,10 @@ class ViewApiUser extends ViewRecord
                 ->columnSpanFull(),
         ]);
     }
+
+//    public function getRecord()
+//    {
+//        dd(request()->route('record'));
+//        return ApiUser::findOrFail(request()->route('record'));
+//    }
 }

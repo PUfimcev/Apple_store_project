@@ -12,6 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\Permission\Models\Role;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
 
 class User extends Authenticatable implements FilamentUser
@@ -28,6 +29,7 @@ class User extends Authenticatable implements FilamentUser
         'name',
         'email',
         'password',
+        'remember_token',
     ];
 
     /**
@@ -67,4 +69,6 @@ class User extends Authenticatable implements FilamentUser
     {
         return str_ends_with($this->email, '@admin.com') && $this->hasVerifiedEmail();
     }
+
+
 }

@@ -19,7 +19,8 @@
         "laravel/telescope": "^5.7",
         "laravel/tinker": "^2.10.1",
         "laravel/ui": "^4.6",
-        "spatie/laravel-permission": "^6.17"
+        "spatie/laravel-permission": "^6.17",
+        "tymon/jwt-auth": "^2.2"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest"
