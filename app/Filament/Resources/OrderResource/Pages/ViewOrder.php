@@ -32,13 +32,13 @@ class ViewOrder extends ViewRecord
                 ->weight(FontWeight::Bold),
             TextEntry::make('total_amount')->label('Total Amount')
                 ->weight(FontWeight::Bold),
-            TextEntry::make('api_user_id')
+            TextEntry::make('apiUser.first_name')
                 ->label('First name')
                 ->weight(FontWeight::Bold),
-            TextEntry::make('api_user_id')
+            TextEntry::make('apiUser.last_name')
                 ->label('Last name')
                 ->weight(FontWeight::Bold),
-            TextEntry::make('api_user_id')
+            TextEntry::make('apiUser.phone_number')
                 ->label("Consumer's phone number")
                 ->weight(FontWeight::Bold),
             TextEntry::make('deliveryAddress.address')->label('Address')

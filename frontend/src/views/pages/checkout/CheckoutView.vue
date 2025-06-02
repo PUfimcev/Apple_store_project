@@ -15,7 +15,7 @@ const { userFullData} = authStore
 const {isLoggedIn } = storeToRefs(authStore)
 
 const cartStore = useCartStore()
-const {handleCheckout, cart, productData, totalSumStore, productError, productLoading } = cartStore
+const {handleCheckout, removeCart, cart, productData, totalSumStore, productError, productLoading } = cartStore
 
 
 const validationSchema = yup.object({
@@ -37,7 +37,7 @@ const onSubmit = handleSubmit( async (values) => {
   const orderData = {
     ...values,
     api_user_id: userFullData.id,
-    phone: userFullData.phone_number,
+    // phone: userFullData.phone_number,
     address: userFullData.address || '',
     city: userFullData.city || '',
     total_amount: totalSumStore,
@@ -51,7 +51,10 @@ const onSubmit = handleSubmit( async (values) => {
 
   const result = await handleCheckout(orderData)
 
-  if (result) await router.push({name: 'cart'})
+  if (result) {
+      await removeCart()
+      await router.push({name: 'store'})
+  }
 })
 
 watch(isLoggedIn, (newValue) => {

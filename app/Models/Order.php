@@ -12,6 +12,7 @@ use Illuminate\Notifications\Notifiable;
 
 /**
  * @method static where(string $string, string $string1)
+ * @method static create(array $orderParams)
  */
 class Order extends Model
 {

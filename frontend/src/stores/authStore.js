@@ -90,7 +90,6 @@ export const useAuthStore = defineStore('auth', () => {
             userFullData.value = {}
             accessToken.value = ''
             isLoggedIn.value = false;
-            localStorage.removeItem('auth')
             message.value = result.data[0].message;
         } catch (err) {
             error.value = err?.data?.error ?? 'Unexpected error';
@@ -121,7 +120,6 @@ export const useAuthStore = defineStore('auth', () => {
 
             if (err.response?.status === 401 || err.response?.status === 500) {
                 await logout();
-                window.location.href = "/login"
             }
         }
     };
