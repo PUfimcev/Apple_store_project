@@ -102,10 +102,10 @@ watchEffect(() => {
       <Loading/>
     </div>
     <div v-if="productError"
-         class="error_block d-flex align-items-center justify-content-center px-3 w-100">
+         class="error_block d-flex align-items-center justify-content-center p-3 w-100">
       <ErrorComponent :error="productError"/>
     </div>
-    <div v-if="productDataInCart.length > 0" class="cart__block w-100">
+    <div v-else class="cart__block w-100">
 
       <header class="d-flex align-items-center justify-content-between mx-auto">
         <h1>Shopping Cart</h1>
@@ -158,7 +158,7 @@ watchEffect(() => {
 <style scoped lang="sass">
 .cart__page
   .spinner_block, .error_block
-    height: 60dvh
+    height: 100dvh
 
   .cart__block
     header

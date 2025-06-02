@@ -49,7 +49,7 @@ const onSubmit = handleSubmit( async (values) => {
 
   const result = await handleCheckout(orderData)
 
-  if (result) await router.push("/")
+  if (result) await router.push({name: 'cart'})
 })
 
 watch(isLoggedIn, (newValue) => {
@@ -64,7 +64,7 @@ watch(isLoggedIn, (newValue) => {
     <div v-if="productLoading">
       <Loading/>
     </div>
-    <div v-else-if="productError"
+    <div v-if="productError"
          class="error_block d-flex align-items-center justify-content-center px-3 w-100">
       <ErrorComponent :error="productError"/>
     </div>
