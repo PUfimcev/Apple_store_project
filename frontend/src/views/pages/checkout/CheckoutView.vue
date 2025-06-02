@@ -7,10 +7,12 @@ import * as yup from "yup";
 import {useField, useForm} from "vee-validate";
 import Loading from "@/components/Loading.vue";
 import ErrorComponent from "@/components/ErrorComponent.vue";
+import {storeToRefs} from "pinia";
 
 const router = useRouter()
 const authStore = useAuthStore()
-const {isLoggedIn, userFullData} = authStore
+const { userFullData} = authStore
+const {isLoggedIn } = storeToRefs(authStore)
 
 const cartStore = useCartStore()
 const {handleCheckout, cart, productData, totalSumStore, productError, productLoading } = cartStore

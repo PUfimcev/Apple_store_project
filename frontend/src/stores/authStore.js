@@ -93,10 +93,10 @@ export const useAuthStore = defineStore('auth', () => {
             localStorage.removeItem('auth')
             message.value = result.data[0].message;
         } catch (err) {
-            console.error(err)
             error.value = err?.data?.error ?? 'Unexpected error';
         }
     }
+
     const getUserFullData = async () => {
 
         const result = await getAllData('/api/user')
@@ -104,21 +104,28 @@ export const useAuthStore = defineStore('auth', () => {
         error.value = result.error
         userFullData.value = result.data
     }
+
     const getRefreshToken = async () => {
-        const {createData} = useRestAPIService('/api/refresh');
+        const { createData } = useRestAPIService("/api/refresh");
 
         try {
             const result = await createData({});
-            accessToken.value = result.data.access_token;
-        } catch (err) {
-            error.value = err?.data?.error ?? 'Unexpected error';
 
-            if (err.response?.status === 401) {
+            if (result.data.access_token) {
+                accessToken.value = result.data.access_token;
+            } else {
+                error.value = "No access token received"
+            }
+        } catch (err) {
+            error.value = err?.data?.error ?? "Unexpected error";
+
+            if (err.response?.status === 401 || err.response?.status === 500) {
                 await logout();
-                window.location.href = "/login";
+                window.location.href = "/login"
             }
         }
-    }
+    };
+
 
     const emailExists = async (email) => {
 

@@ -1,5 +1,6 @@
 import axios from "axios";
 import {useAuthStore} from "@/stores/authStore.js";
+import {storeToRefs} from "pinia";
 
 const axiosInstance = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -8,42 +9,47 @@ const axiosInstance = axios.create({
         "Content-Type": "application/json",
     },
     withCredentials: true
-});
+})
+
 axiosInstance.interceptors.request.use((config) => {
-        const authStore = useAuthStore()
-        const token = authStore.accessToken
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`
-        }
+    const authStore = useAuthStore()
+    const {accessToken } = storeToRefs(authStore)
+    const token = accessToken.value
 
-        return config;
-    },
-);
-
-
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`
+    }
+    return config
+})
 axiosInstance.interceptors.response.use(
     (response) => response,
 
     async (error) => {
-        const authStore = useAuthStore();
-        const originalRequest = error.config;
+        const authStore = useAuthStore()
+        const {logout, getRefreshToken } = authStore
+        const {accessToken } = storeToRefs(authStore)
+        const originalRequest = error.config
 
         if (error.response?.status === 401 && !originalRequest._retry) {
-            originalRequest._retry = true;
+            originalRequest._retry = true
 
             try {
-                await authStore.getRefreshToken();
-                const token = authStore.accessToken;
-                if (token) {
-                    originalRequest.headers.Authorization = `Bearer ${token}`;
-                    return axiosInstance.request(originalRequest);
+                await getRefreshToken() // Должен обновлять access_token из cookie
+
+                const newToken = accessToken.value
+                if (newToken) {
+                    // Обновляем заголовки для всех будущих запросов
+                    axiosInstance.defaults.headers.Authorization = `Bearer ${newToken}`
+                    originalRequest.headers.Authorization = `Bearer ${newToken}`
+
+                    return axiosInstance(originalRequest)
                 }
             } catch (err) {
-                await authStore.logout();
+                await logout()
             }
         }
 
         throw error;
     }
-);
-export default axiosInstance
+)
+export default axiosInstance;
