@@ -1,7 +1,7 @@
 <script setup>
 
 import {BButton, BDropdownItem, BNavbar, BNavbarBrand, BNavbarNav, BNavItem, BNavItemDropdown} from "bootstrap-vue-next";
-import {onMounted, ref, toRefs} from "vue";
+import {onMounted, ref, toRefs, watch} from "vue";
 import {getAllData} from "@/components/services/getAllData.js";
 import {storeToRefs} from "pinia";
 import {useRouter} from "vue-router";
@@ -22,6 +22,8 @@ const pageTop = () => {
 }
 
 const data = ref([]);
+
+
 onMounted(async () => {
 
     const result = await getAllData('/api/categories');
@@ -40,7 +42,7 @@ onMounted(async () => {
         <BNavbarNav class="btn_nav_group d-flex justify-content-end align-items-center">
             <BNavItemDropdown right class="small-dropdown btn-sm" toggle-class="text-decoration-none" no-caret>
                 <template #button-content>
-                    <i v-if="!!userShortData.user_name" class="user_name">{{userShortData.user_name}}</i>
+                    <i v-if="isLoggedIn" class="user_name">{{userShortData.user_name}}</i>
                     <i v-else class="bi bi-person"></i>
                 </template>
                 <BDropdownItem v-if="isLoggedIn" to="/user">Profile</BDropdownItem>

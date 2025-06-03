@@ -9,11 +9,10 @@ import {encryptData, decryptData} from "@/components/utils/encription.js"
 export const useAuthStore = defineStore('auth', () => {
     const isLoggedIn = ref(false)
     const prevRoute = ref(null)
-    const accessToken = ref(null)
     const error = ref(null)
     const loading = ref(false)
-    const userShortData = ref({})
-    const userFullData = ref({})
+    const userShortData = ref(null)
+    const userFullData = ref(null)
     const message = ref(null)
 
     // Функция сохранения зашифрованных данных
@@ -65,31 +64,37 @@ export const useAuthStore = defineStore('auth', () => {
     }
     const login = async (credentials) => {
 
-        const result = await getDataAfterLoginRegister(`/api/login`, credentials);
-        userShortData.value = result.data
-        error.value = result.error
-        loading.value = result.loading ?? false;
+        try {
+            loading.value = true;
+            const result = await getDataAfterLoginRegister(`/api/login`, credentials);
+            loading.value = false;
 
-        if (result.data.access_token) {
-            accessToken.value = result.data.access_token;
-            userShortData.value = result.data.user;
-            isLoggedIn.value = true;
-            await getUserFullData()
-            // persistState()
-            return true
-        } else {
-            error.value = 'No access token received';
+            if (result.data?.access_token) {
+                localStorage.setItem('access_token', result.data.access_token);
+                userShortData.value = result.data.user;
+                isLoggedIn.value = true;
+                await getUserFullData();
+                return true;
+            } else {
+                isLoggedIn.value = false;
+                userShortData.value = null;
+                error.value = result.error?.message || "Invalid email or password";
+                console.error("Login failed:", error.value);
+                return false;
+            }
+        } catch (err) {
+            loading.value = false;
+            console.error("Ошибка логина:", err);
+            return false;
         }
     }
     const logout = async () => {
-
-        const {createData} = useRestAPIService('/api/logout')
         try {
-            const result = await createData({});
-            userShortData.value = {}
-            userFullData.value = {}
-            accessToken.value = ''
-            isLoggedIn.value = false;
+            const result = await getDataAfterLoginRegister(`/api/logout`);
+            localStorage.removeItem('access_token')
+            userShortData.value = null
+            userFullData.value = null
+            isLoggedIn.value = false
             message.value = result.data[0].message;
         } catch (err) {
             error.value = err?.data?.error ?? 'Unexpected error';
@@ -99,30 +104,30 @@ export const useAuthStore = defineStore('auth', () => {
     const getUserFullData = async () => {
 
         const result = await getAllData('/api/user')
+        userFullData.value = result.data === [] ? null : result.data;
         loading.value = result.loading
         error.value = result.error
-        userFullData.value = result.data
     }
 
-    const getRefreshToken = async () => {
-        const { createData } = useRestAPIService("/api/refresh");
-
-        try {
-            const result = await createData({});
-
-            if (result.data.access_token) {
-                accessToken.value = result.data.access_token;
-            } else {
-                error.value = "No access token received"
-            }
-        } catch (err) {
-            error.value = err?.data?.error ?? "Unexpected error";
-
-            if (err.response?.status === 401 || err.response?.status === 500) {
-                await logout();
-            }
-        }
-    };
+    // const getRefreshToken = async () => {
+    //     const {createData} = useRestAPIService("/api/refresh");
+    //
+    //     try {
+    //         const result = await createData();
+    //
+    //
+    //         accessToken.value = result.data.access_token;
+    //         await getUserFullData()
+    //
+    //     } catch (err) {
+    //         error.value = err?.data?.error ?? "Unexpected error";
+    //
+    //         if (err.response?.status === 401 || err.response?.status === 500) {
+    //             isLoggedIn.value = false
+    //             await logout();
+    //         }
+    //     }
+    // };
 
 
     const emailExists = async (email) => {
@@ -142,7 +147,6 @@ export const useAuthStore = defineStore('auth', () => {
     return {
         isLoggedIn,
         prevRoute,
-        accessToken,
         error,
         loading,
         userShortData,
@@ -151,7 +155,7 @@ export const useAuthStore = defineStore('auth', () => {
         register,
         login,
         logout,
-        getRefreshToken,
+        // getRefreshToken,
         getUserFullData,
         emailExists
     }

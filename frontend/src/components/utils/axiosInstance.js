@@ -1,6 +1,6 @@
 import axios from "axios";
 import {useAuthStore} from "@/stores/authStore.js";
-import {storeToRefs} from "pinia";
+
 
 const axiosInstance = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -12,44 +12,48 @@ const axiosInstance = axios.create({
 })
 
 axiosInstance.interceptors.request.use((config) => {
-    const authStore = useAuthStore()
-    const {accessToken } = storeToRefs(authStore)
-    const token = accessToken.value
+
+    const token = localStorage.getItem('access_token')
 
     if (token) {
         config.headers.Authorization = `Bearer ${token}`
     }
     return config
 })
+
+const ENABLE_REFRESH = false
 axiosInstance.interceptors.response.use(
     (response) => response,
 
     async (error) => {
         const authStore = useAuthStore()
-        const {logout, getRefreshToken } = authStore
-        const {accessToken } = storeToRefs(authStore)
+        const {logout, isLoggedIn} = authStore
+
         const originalRequest = error.config
 
-        if (error.response?.status === 401 && !originalRequest._retry) {
+          if (ENABLE_REFRESH && error.response?.status === 401 &&
+            !originalRequest._retry &&
+            originalRequest.url === "/api/refresh") {
             originalRequest._retry = true
 
             try {
-                await getRefreshToken() // Должен обновлять access_token из cookie
+                const { data } = await axios.post('/api/refresh');
 
-                const newToken = accessToken.value
-                if (newToken) {
-                    // Обновляем заголовки для всех будущих запросов
-                    axiosInstance.defaults.headers.Authorization = `Bearer ${newToken}`
-                    originalRequest.headers.Authorization = `Bearer ${newToken}`
+                localStorage.setItem('access_token', data.access_token);
+                originalRequest.headers.Authorization = `Bearer ${data.access_token}`;
 
-                    return axiosInstance(originalRequest)
+                return axiosInstance.request(originalRequest);
+
+            } catch (refreshError) {
+                if (refreshError.response?.status === 403 || refreshError.response?.status === 400) {
+                    isLoggedIn.value = false
+                    await logout();
                 }
-            } catch (err) {
-                await logout()
+                return Promise.reject(refreshError);
             }
         }
-
-        throw error;
+        isLoggedIn.value = false
+        return Promise.reject(error);
     }
 )
 export default axiosInstance;
