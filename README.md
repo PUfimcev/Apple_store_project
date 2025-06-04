@@ -82,7 +82,7 @@
 
 3. Установите зависимости с помощью Composer:
    ```bash
-   ./vendor/bin/sail composer install
+   composer install
    ```
    
 4. Скопируйте файл `.env.example` в `.env` :
