@@ -104,7 +104,7 @@ export const useAuthStore = defineStore('auth', () => {
     const getUserFullData = async () => {
 
         const result = await getAllData('/api/user')
-        userFullData.value = result.data === [] ? null : result.data;
+        userFullData.value = !result.data  ? null : result.data;
         loading.value = result.loading
         error.value = result.error
     }

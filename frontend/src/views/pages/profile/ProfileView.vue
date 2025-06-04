@@ -18,7 +18,10 @@ watch(() => isLoggedIn.value, async (newValue) => {
 
 
 onMounted(async () => {
-    if (!isLoggedIn) router.push("/login")
+    if (!isLoggedIn.value || !userFullData.value) {
+        isLoggedIn.value = false
+        router.push("/login")
+    }
     await getUserFullData()
     user.value = userFullData.value
 
