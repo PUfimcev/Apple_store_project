@@ -78,6 +78,7 @@
 2. Клонировать удаленный репозиторий:
    ```bash
    git clone https://github.com/PUfimcev/Apple_store_project.git
+   cd Apple_store_project
    ```
 
 3. Установите зависимости с помощью Composer:
