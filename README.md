@@ -79,16 +79,13 @@
    ```bash
    git clone https://github.com/PUfimcev/Apple_store_project.git
    ```
-3. В созданной папке запустите контенеры в sail
-   ```bash
-   ./vendor/bin/sail up -d
-   ```
-4. Установите зависимости с помощью Composer:
+
+3. Установите зависимости с помощью Composer:
    ```bash
    ./vendor/bin/sail composer install
    ```
    
-5. Скопируйте файл `.env.example` в `.env` :
+4. Скопируйте файл `.env.example` в `.env` :
    ```bash
     cp .env.example .env
     ```
@@ -109,6 +106,11 @@
    ```env
    FILESYSTEM_DISK=public
    ```
+5. В созданной папке запустите контенеры в sail
+   ```bash
+   ./vendor/bin/sail up -d
+   ```
+   
 6. Cгенерируйте ключ приложения:
    ```bash
    ./vendor/bin/sail artisan key:generate
