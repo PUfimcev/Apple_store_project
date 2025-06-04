@@ -12,7 +12,7 @@ export const getAllData = async (endpoint, params = {}) => {
         const response = await fetchAllData(params);
         data = response.data;
     } catch (err) {
-        error = err;
+        error = err?.response?.data || err?.message || 'Network error or invalid response'
     } finally {
         loading = false;
     }

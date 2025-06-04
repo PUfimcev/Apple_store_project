@@ -13,9 +13,9 @@ Route::middleware(['auth:api'])->group(function () {
 });
 
 Route::controller(AuthApiController::class)->group(function () {
+    Route::post('/refresh', 'refresh');
     Route::post('/login', 'login');
     Route::post('/register', 'register');
-    Route::post('/refresh', 'refresh');
     Route::post('/check-email', 'checkEmail');
 });
 

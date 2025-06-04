@@ -24,7 +24,7 @@ const routes = [
         beforeEnter: (to, from) => {
             const authStore = useAuthStore()
             const {isLoggedIn} = storeToRefs(authStore)
-            return isLoggedIn.value ? true : {name: 'login'}
+            return isLoggedIn.value ?? false ? true : {name: 'login'}
         }
     },
     {

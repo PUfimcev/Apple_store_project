@@ -9,12 +9,10 @@ use App\Models\ApiUser;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
-
 
 class AuthApiController extends APIController
 {
@@ -64,10 +62,11 @@ class AuthApiController extends APIController
             if (!$accessToken = JWTAuth::attempt($credentials)) {
                 return $this->responseError(['error' => 'Invalid credentials'], 401);
             }
-
-            $user = auth()->user();
-            $refreshToken = JWTAuth::fromUser($user);
-            $cookie = cookie('refresh_token', $refreshToken, 60 * 24 * 14, null, null, false, true);
+            if (!$user = JWTAuth::user()) {
+                return $this->responseError(['error' => 'User not found'], 404);
+            }
+            $refreshToken = JWTAuth::fromUser(auth()->user());
+            $cookie = cookie('refresh_token', $refreshToken, 60 * 24 * 14, '/', null, false, true, false, 'lax');
 
         } catch (Exception $e) {
             logger($e->getMessage());
@@ -87,34 +86,33 @@ class AuthApiController extends APIController
      */
     public function logout(): JsonResponse
     {
+        if (!JWTAuth::getToken()) {
+            return response()->json(['error' => 'Token not provided'], 401);
+        }
+
         JWTAuth::invalidate(JWTAuth::getToken());
         $message = ['message' => 'Logged out successfully'];
-        return $this->responseSuccess($message, 200)->cookie('refresh_token', '', -1, '/', null, false, true);
+        return $this->responseSuccess($message, 200)->cookie('refresh_token', '', -1, '/', null, false, true, false, 'lax');
     }
 
-    public function refresh(): JsonResponse
-    {
-        try {
-            $refreshToken = request()->cookie('refresh_token');
-            if (!$refreshToken) {
-                return $this->responseError(['error' => 'Refresh token not provided'], 400);
-            }
-
-            // Генерируем новый access_token без изменения refresh_token
-            $newToken = JWTAuth::setToken($refreshToken)->refresh();
-
-            // Теперь обновляем refresh_token на основе старого refresh_token
-            $newRefreshToken = JWTAuth::setToken($refreshToken)->refresh();
-
-            return response()->json([
-                'access_token' => $newToken
-            ])->cookie('refresh_token', $newRefreshToken, 60 * 24 * 14, null, null, false, true);
-
-        } catch (Exception $e) {
-            logger($e->getMessage());
-            return $this->responseError(['error' => 'Could not refresh token'], 500);
-        }
-    }
+//    public function refresh(): JsonResponse
+//    {
+//        $oldRefreshToken = $request->cookie('refresh_token'); // Получаем старый refresh-токен
+//
+//        if (!$oldRefreshToken) {
+//            return response()->json(['error' => 'No refresh token'], 401);
+//        }
+//
+//        try {
+//            $newAccessToken = JWTAuth::refresh($oldRefreshToken); // Обновляем access-токен
+//            $newRefreshToken = JWTAuth::fromUser(auth()->user()); // Создаем новый refresh-токен
+//
+//            return response()->json(['access_token' => $newAccessToken])
+//                ->cookie('refresh_token', $newRefreshToken, 60 * 24 * 14, '/', null, false, true, false, 'lax');
+//        } catch (Exception $e) {
+//            return response()->json(['error' => 'Invalid refresh token'], 401);
+//        }
+//    }
 
 
     public function me(): JsonResponse

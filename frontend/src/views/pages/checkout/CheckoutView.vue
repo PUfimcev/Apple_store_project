@@ -7,13 +7,15 @@ import * as yup from "yup";
 import {useField, useForm} from "vee-validate";
 import Loading from "@/components/Loading.vue";
 import ErrorComponent from "@/components/ErrorComponent.vue";
+import {storeToRefs} from "pinia";
 
 const router = useRouter()
 const authStore = useAuthStore()
-const {isLoggedIn, userFullData} = authStore
+const { userFullData} = authStore
+const {isLoggedIn } = storeToRefs(authStore)
 
 const cartStore = useCartStore()
-const {handleCheckout, cart, productData, totalSumStore, productError, productLoading } = cartStore
+const {handleCheckout, removeCart, cart, productData, totalSumStore, productError, productLoading } = cartStore
 
 
 const validationSchema = yup.object({
@@ -35,7 +37,7 @@ const onSubmit = handleSubmit( async (values) => {
   const orderData = {
     ...values,
     api_user_id: userFullData.id,
-    phone: userFullData.phone_number,
+    // phone: userFullData.phone_number,
     address: userFullData.address || '',
     city: userFullData.city || '',
     total_amount: totalSumStore,
@@ -49,7 +51,10 @@ const onSubmit = handleSubmit( async (values) => {
 
   const result = await handleCheckout(orderData)
 
-  if (result) await router.push("/")
+  if (result) {
+      await removeCart()
+      await router.push({name: 'store'})
+  }
 })
 
 watch(isLoggedIn, (newValue) => {
@@ -64,7 +69,7 @@ watch(isLoggedIn, (newValue) => {
     <div v-if="productLoading">
       <Loading/>
     </div>
-    <div v-else-if="productError"
+    <div v-if="productError"
          class="error_block d-flex align-items-center justify-content-center px-3 w-100">
       <ErrorComponent :error="productError"/>
     </div>

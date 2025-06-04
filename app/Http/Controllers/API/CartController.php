@@ -4,6 +4,9 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\APIController;
 use App\Http\Resources\ProductVariantResource;
+use App\Models\ApiUser;
+use App\Models\DeliveryAddress;
+use App\Models\Order;
 use App\Models\ProductVariant;
 use Illuminate\Http\Request;
 use Exception;
@@ -37,14 +40,25 @@ class CartController extends APIController
 
     public function confirmOrder(Request $request): JsonResponse
     {
-        $orderData = $request->all();
-
-        dd($orderData);
-        // Here you would typically handle the order confirmation logic, such as saving the order to the database.
-        // For now, we will just return a success response with the order data.
-
         try {
-            // Validate and process the order data here
+            $orderParams = $request->only('api_user_id', 'total_amount', 'payment_method', 'status');
+            $addressParams = $request->only('address', 'city');
+            $address = DeliveryAddress::firstOrCreate([
+                'address' => $addressParams['address'],
+                'city' => $addressParams['city'],
+                'api_user_id' => $orderParams['api_user_id']
+            ]);
+            $addressId = $address->id;
+
+            $orderParams['delivery_address_id'] = $addressId;
+            $order = Order::create($orderParams);
+
+            foreach ($request->input('products') as $product) {
+
+                $productVariantsData[$product['product_variant_id']] = array_slice($product, 1);
+            }
+            $order->productVariants()->attach($productVariantsData);
+
             return $this->responseSuccess(['message' => 'Order confirmed successfully'], 200);
         } catch (Exception $e) {
             logger($e->getMessage());

@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * @method static findOrCreate(array $array)
+ * @method static firstOrCreate(array $array)
+ */
 class DeliveryAddress extends Model
 {
     use HasFactory, Notifiable;

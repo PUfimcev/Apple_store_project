@@ -80,9 +80,7 @@ export const useCartStore = defineStore('cart', () => {
     const handleCheckout =  async (payload) => {
         // This function can be used to handle checkout confirmation logic
         // For example, sending the cart data to a server or processing payment
-        console.log(payload)
         const result = await confirmCheckout(`/api/order/confirmed`, payload)
-
         message.value = result.data
         productError.value = result.error
         productLoading.value = result.loading
