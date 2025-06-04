@@ -1,66 +1,178 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Интернет-магазина техники Apple с использованием Vue.js, Laravel, Filament
 
-## About Laravel
+## О проекте
+Интернет-магазин техники Apple представляет собой веб-платформу для продажи оригинальной продукции Apple. В основе архитектуры магазина лежит микросервисный подход, обеспечивающий масштабируемость и надежность.
+Данный интернет-магазин построен на основе Vue.js (Frontend) и Laravel (Backend)  с административной панелью, реализованной через Filament..
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Основные возможности
+- Каталог товаров с актуальными характеристиками и ценами
+- Выбор товаров по заданным параметрам
+- Создание аккаунта пользователя, его регистрация, аутентификация
+- Оформление заказов
+- В админпанеле управление пользователями, товарами, включая обработку заказов
+- API для взаимодействия с внешними сервисами и внутренними системами
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Laravel
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/laravel/framework.svg?style=flat-square)](https://packagist.org/packages/laravel/framework)
+[![Total Downloads](https://img.shields.io/packagist/dt/laravel/framework.svg?style=flat-square)](https://packagist.org/packages/laravel/framework)
+[![GitHub License](https://img.shields.io/github/license/laravel/framework.svg?style=flat-square)](
 
-## Learning Laravel
+### Технологический стек
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- Frontend: Vue.js  (Composition API, Vue Router, Pinia)
+- Backend: Laravel (Eloquent ORM,  API Resources)
+- Админ-панель: Filament Admin
+- База данных: MySQL
+- Аутентификация: Laravel JWT
+- Хранение данных: hosting
+- API: REST API
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Архитектура
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+#### 1. Фронтенд (Vue.js)
 
-## Laravel Sponsors
+- Vue Router для управления маршрутами
+- Pinia для управления состоянием
+- Axios для работы с API
+- UI-библиотека (Bootstrap)
+- 
+#### 2. Бэкенд (Laravel)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- Контроллеры и ресурсы API
+- Eloquent ORM для работы с базой данных
+- Laravel Queues для обработки фоновых задач
+- Логирование через Laravel Telescope
 
-### Premium Partners
+#### 3. Административная панель (Filament)
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+- Управление товарами (CRUD)
+- Менеджмент заказов (просмотр, изменение статусов)
+- Статистика и аналитика
+- Управление пользователями
 
-## Contributing
+## Установка
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 📌 Требования
+Перед установкой убедитесь, что у вас установлены:
+- **Docker** и **DockerHub**
+- **Git** для управления репозиторием
+- **Node.js** для работы с фронтендом
 
-## Code of Conduct
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+#### 📌 Ссылки для установки необходимых инструментов
 
-## Security Vulnerabilities
+[![Docker](https://img.shields.io/badge/Docker-Install-blue?logo=docker)](https://www.docker.com/get-started)
+[![DockerHub](https://img.shields.io/badge/DockerHub-Explore-blue?logo=docker)](https://hub.docker.com/)
+[![Git](https://img.shields.io/badge/Git-Download-orange?logo=git)](https://git-scm.com/downloads)
+[![Node.js](https://img.shields.io/badge/Node.js-Install-green?logo=node.js)](https://nodejs.org/en/download/)
+[![Composer](https://img.shields.io/badge/Composer-Download-purple?logo=composer)](https://getcomposer.org/download/)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 📌 Установка проекта
 
-## License
+1. Создайте новую папку для проекта и в **IDE** открыть ее в терминале (например, *apple-store*)
+   ```bash
+   mkdir apple-store && cd apple-store
+   ```
+2. Клонировать удаленный репозиторий:
+   ```bash
+   git clone https://github.com/PUfimcev/Apple_store_project.git
+   ```
+3. В созданной папке запустите контенеры в sail
+   ```bash
+   ./vendor/bin/sail up -d
+   ```
+4. Установите зависимости с помощью Composer:
+   ```bash
+   ./vendor/bin/sail composer install
+   ```
+   
+5. Скопируйте файл `.env.example` в `.env` :
+   ```bash
+    cp .env.example .env
+    ```
+- и в `.env` настройте параметры подключения к базе данных:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=mysql
+   DB_PORT=3306
+   DB_DATABASE=AppleStoreDev
+   DB_USERNAME=sail
+   DB_PASSWORD=password
+   ```
+- также добавть в `.env`:
+    ```env
+    AUTH_GUARD=api
+    ```
+- и заменить `local`  на  `public` в следующей строке:
+   ```env
+   FILESYSTEM_DISK=public
+   ```
+6. Cгенерируйте ключ приложения:
+   ```bash
+   ./vendor/bin/sail artisan key:generate
+   ```
+7. Сгенерируйте ключ  JWT:
+   ```bash
+   ./vendor/bin/sail artisan jwt:secret
+   ```
+- и добавте в `.env`:
+   ```env
+   JWT_SECRET=ваш_сгенерированный_ключ
+   ```
+  
+8. Пересоберите контейнеры
+   ```bash
+   ./vendor/bin/sail down && sail up -d
+   ```
+9. Очистите кеш конфигурации (чтобы Laravel прочитал новые `.env`):
+   ```bash
+   ./vendor/bin/sail artisan config:clear
+   ./vendor/bin/sail artisan cache:clear
+   ```
+   
+10. Cоздать символическую ссылку:
+   ```bash
+   ./vendor/bin/sail artisan storage:link
+   ```
+   
+11. Скопировать zip-файл `public.zip` (в корне проекта)  с изображениями в папку `storage/app/` и распаковать его:
+    ```bash
+    unzip public.zip -d ./storage/app/
+    ```
+12. Импортировать базу данных из файла `AppleStoreDev.sql` (находится в корне проекта) в вашу базу данных MySQL. Вы можете использовать phpMyAdmin или командную строку MySQL для этого:
+    ```bash
+    mysql -u sail -p -h mysql AppleStoreDev < AppleStoreDev.sql
+    ```
+14. Установите зависимости для фронтенда:
+    ```bash
+    cd frontend
+    npm install
+    ```
+15. В папке `frontend` в корне создайте файл `.env` и добавьте следующие строки:
+    ```env
+    VITE_API_BASE_URL=http://localhost
+    ```
+16. Заново пересоберите контейнеры
+   ```bash
+   ./vendor/bin/sail down && sail up -d
+   ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+17. Откройте терминал в папке `frontend` и запустите Vue.js сервер разработки:
+    ```bash
+    npm run dev
+    ```
+    - дополниетльно можно запустить в теримнале в главной папке команды:
+    ```bash
+    ./vendor/bin/sail artisan queue:work
+    ./vendor/bin/sail artisan schedule:work
+    ```
+    
+18. Откройте браузер и перейдите по адресу `http://localhost:5173` для доступа к фронтенду.
+
+
+19. Для доступа к административной панели Filament, перейдите по адресу `http://localhost/admin` и войдите с учетными данными администратора:
+     - **Email:** superadmin@admin.com
+     - **Пароль:** 12345678
+     
