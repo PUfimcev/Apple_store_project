@@ -12,14 +12,19 @@ const router = useRouter();
 
 const user = ref({});
 
-watch(() => isLoggedIn.value, async (newValue) => {
+watch(() => isLoggedIn.value, (newValue) => {
     if (!newValue) router.push("/login")
 })
 
 
 onMounted(async () => {
-    if (!isLoggedIn) router.push("/login")
     await getUserFullData()
+    if (!userFullData.value) {
+        isLoggedIn.value = false
+        router.push("/login")
+    }
+    console.log(error.value)
+console.log(isLoggedIn.value)
     user.value = userFullData.value
 
 });

@@ -7,7 +7,6 @@ export const getAllData = async (endpoint, params = {}) => {
     let error = null;
     let loading = true;
 
-
     try {
         const response = await fetchAllData(params);
         data = response.data;

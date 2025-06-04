@@ -103,10 +103,17 @@ export const useAuthStore = defineStore('auth', () => {
 
     const getUserFullData = async () => {
 
-        const result = await getAllData('/api/user')
-        userFullData.value = result.data === [] ? null : result.data;
-        loading.value = result.loading
-        error.value = result.error
+        const result = await getAllData('/api/user');
+
+        if (result.data.length > 0) {
+            userFullData.value = result.data;
+        } else {
+            userFullData.value = null; // Ensure it's an object or null
+        }
+
+        loading.value = result.loading;
+        error.value = result.error;
+        console.log("getUserFullData", result.data);
     }
 
     // const getRefreshToken = async () => {
